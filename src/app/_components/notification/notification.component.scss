@@ -1,0 +1,88 @@
+.my-notifications {
+    display: inline-block;
+    margin: 0px auto;
+    padding-left: 65px;
+    position: fixed;
+    transition: all 0.5s ease-in-out 0s;
+    z-index: 1051;
+    top: 20px;
+    right: 20px;
+}
+
+.my-notifications > .alert-success {
+    border-left: 4px solid #31ce36;
+}
+
+.my-notifications >.alert-danger {
+    border-left: 4px solid #f25961;
+}
+
+.my-notifications > .alert-warning {
+    border-left: 4px solid #d34a2b;
+}
+
+.my-notifications >.alert-info {
+    border-left: 4px solid #02afce;
+}
+
+.my-notifications [data-notify=icon] {
+    display: block;
+}
+
+.my-notifications [data-notify=icon]::before {
+    line-height: 35px;
+    font-size: 22px;
+    display: block;
+    left: 15px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 35px;
+    height: 35px;
+    border-radius: 30px;
+    text-align: center;
+    background: #fff;
+}
+
+.my-notifications > .alert-success [data-notify=icon]:before {
+    color: #31ce36;
+}
+
+.my-notifications >.alert-danger [data-notify=icon]:before {
+    color: #f25961; 
+}
+
+.my-notifications > .alert-warning [data-notify=icon]:before {
+    color: #d34a2b;
+}
+
+.my-notifications >.alert-info [data-notify=icon]:before {
+    color: #02afce; 
+}
+
+.my-notifications [data-notify=title] {
+    display: block;
+    color: #2b2b2b;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.my-notifications [data-notify=message] {
+    font-size: 13px;
+    color: #2b2b2b;
+}
+
+.my-noti-alert {
+    padding-left: 65px;
+}
+
+.my-noti-button-close {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    position: absolute; 
+    right: 10px; 
+    top: 5px; 
+    z-index: 1033;
+}

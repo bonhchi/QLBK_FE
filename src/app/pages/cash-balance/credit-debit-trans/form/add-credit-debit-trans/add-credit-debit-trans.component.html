@@ -1,0 +1,339 @@
+<div mat-dialog-title class="d-flex justify-content-between mb-3">
+  <h4 class="title-size">THÊM MỚI BẢNG KÊ</h4>
+  <img src="./assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog('close')">
+</div>
+
+<div mat-dialog-content>
+  <div class="row">
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body" style="height: 200px;">
+          <h4 class="card-title text-uppercase">Thông tin tìm kiếm</h4>
+
+          <form class="" [formGroup]="form" (ngSubmit)="onSearchCust()">
+            <div class="form-group row g-3">
+              <div class="col-4">
+                <label>Loại khách hàng</label>
+                <ng-select [items]="customerTypeList" bindLabel="name" bindValue="code"
+                  formControlName="guest" [clearable]=false [selectOnTab]="true"
+                  placeholder="--- Chọn loại khách hàng ---" class="form-control form-control-sm">
+                </ng-select>
+              </div>
+
+              <div class="col-4">
+                <label>Loại bảng kê</label>
+                <ng-select [items]="statementTypeList" bindLabel="name" bindValue="code"
+                  formControlName="statement_type" [clearable]=false [selectOnTab]="true"
+                  placeholder="--- Chọn loại bảng kê ---" class="form-control form-control-sm">
+                </ng-select>
+              </div>
+
+              <div class="col-4">
+                <label>Loại tiền</label>
+                <ng-select [items]="ccyList" bindLabel="name" bindValue="code" 
+                  formControlName="ccy" [clearable]=false [selectOnTab]="true" (change)="onChangeCcy()"
+                  placeholder="--- Chọn loại tiền ---"class="form-control form-control-sm">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row g-3" *ngIf="isGuest">
+              <div class="col-4">
+                <label>Số CIF/GTTT/REF</label>
+                <ng-select [items]="customerDocTypeList" bindLabel="name" bindValue="code"
+                  formControlName="customer_doc_type" [clearable]=false [selectOnTab]="true" [ngClass]="{ 'is-invalid': submittedFormCustInfo && f.customer_doc_type.errors }"
+                  placeholder="--- Chọn nhập số CIF/GTTT/REF ---" class="form-control form-control-sm">
+                </ng-select>
+              </div>
+
+              <div class="col-4">
+                <label></label>
+                <input type="text" placeholder="Vui lòng nhập số CIF/CMND/CCCD/HC/REF" formControlName="customer_num" [ngClass]="{ 'is-invalid': submittedFormCustInfo && f.customer_num.errors }" class="form-control form-control-sm" />
+              </div>
+
+              <div class="col-4 d-flex justify-content-start align-items-end mb-1">
+                <button type="submit" class="btn btn-inverse-primary">
+                  <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner': isLoadingSearch, 'fa-search me-1': !isLoadingSearch}"></i>
+                  Tìm kiếm
+                </button>
+
+                <button type="button" (click)="onRestFormCustInfo()" class="btn btn-inverse-secondary ms-2">
+                  <i class="fa fa-refresh me-1"></i>
+                  Reset
+                </button>
+              </div>
+            </div>
+            
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-body ">
+      <h4 class="card-title text-uppercase">Thông tin khách hàng</h4>
+
+      <form class="row" [formGroup]="formCustInfo">
+        <div class="form-group col-6">
+          <label>Họ và tên</label>
+          <input type="text" formControlName="full_name" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': submitted && fCustInfo.full_name.errors }" />
+        </div>
+
+        <div class="form-group col-2">
+          <label>Số điện thoại</label>
+          <input type="text" formControlName="phone" class="form-control form-control-sm" mask="0*" maxlength="10" [ngClass]="{ 'is-invalid': submitted && fCustInfo.phone.errors }" />
+        </div>
+        
+        <div class="form-group col-2">
+          <label>CMND/CCCD/HC</label>
+          <input type="text" formControlName="issue_no" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': submitted && fCustInfo.issue_no.errors }" />
+        </div>
+
+        <div class="form-group col-2">
+          <label>Ngày cấp</label>
+          <input type="text" formControlName="issue_date" class="form-control form-control-sm" mask="d0/M0/0000" placeholder="DD/MM/YYYY" />
+        </div>
+
+        <div class="form-group col-3">
+          <label>Nơi cấp</label>
+          <input type="text" formControlName="issue_place" class="form-control form-control-sm" />
+        </div>
+
+        <div class="form-group col-9">
+          <label>Địa chỉ</label>
+          <input type="text" formControlName="address" class="form-control form-control-sm" />
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <div class="card mt-3" *ngIf="isShowDebit">
+    <div class="card-body ">
+      <div class="d-flex justify-content-start align-items-end">
+        <h4 class="card-title">GIAO DỊCH CHI TIỀN</h4>
+
+        <div class="ms-4">
+          <button type="button" class="btn btn-inverse-primary" [disabled]="!(isShowDebit && isGuest && (fCustInfo.issue_no.value != null && fCustInfo.issue_no.value != ''))" (click)="openForm('CHI')">Chọn GD Chi</button>
+        </div>
+
+        <div class="ms-4">
+          <button type="button" class="btn btn-inverse-warning" [disabled]="fCustInfo.issue_no.value == null || fCustInfo.issue_no.value == ''" (click)="openFormHandMade('CHI')">Nhập GD Chi</button>
+        </div>
+      </div>
+
+      <div class="table-responsive mt-3">
+        <table class="table table-striped table-hover table-bordered">
+          <thead>
+            <tr class="text-center">
+              <th scope="col">STT</th>
+              <th scope="col">SỐ GIAO DỊCH</th>
+              <th scope="col">NỘI DUNG GIAO DỊCH</th>
+              <th scope="col">SỐ TIỀN</th>
+              <th scope="col">THAO TÁC</th>
+            </tr>
+          </thead>
+
+          <tbody class="text-center">
+            <tr *ngFor="let item of debitTransList, index as i">
+              <td> {{ i + 1 }} </td>
+              <td> {{ item.trn_ref_no}} </td>
+              <td> {{ item.description }} </td>
+              <td> {{ moneyToTextService.formatCurrency(item.amount) }} </td>
+              <td>
+                <button type="button" class="btn btn btn-inverse-info btn-sm" *ngIf="isHandTrans">
+                  <i class="fa fa-edit"></i>
+                </button>
+
+                <button type="button" class="btn btn-inverse-danger ms-1 btn-sm" (click)="onDeleteDebitTrans(item)">
+                  <i class="fa fa-trash-o"></i>
+                </button>
+              </td>
+            </tr>
+
+            <tr class="fw-bolder">
+              <td colspan="3" class="text-danger"> TỔNG CHI </td>
+              <td class="text-danger"> {{ moneyToTextService.formatCurrency(totalDebitAmount) }} </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-3" *ngIf="isShowCredit">
+    <div class="card-body ">
+      <div class="d-flex justify-content-start align-items-end">
+        <h4 class="card-title">GIAO DỊCH THU TIỀN</h4>
+
+        <div class="ms-4">
+          <button type="button" class="btn btn-inverse-primary" [disabled]="!(isShowCredit && isGuest && (fCustInfo.issue_no.value != null && fCustInfo.issue_no.value != ''))" (click)="openForm('THU')">Chọn GD Thu</button>
+        </div>
+
+        <div class="ms-4">
+          <button type="button" class="btn btn-inverse-warning" [disabled]="fCustInfo.issue_no.value == null || fCustInfo.issue_no.value == ''" (click)="openFormHandMade('THU')">Nhập GD Thu</button>
+        </div>
+      </div>
+
+      <div class="table-responsive mt-3">
+        <table class="table table-striped table-hover table-bordered">
+          <thead>
+            <tr class="text-center">
+              <th scope="col">STT</th>
+              <th scope="col">SỐ GIAO DỊCH</th>
+              <th scope="col">NỘI DUNG GIAO DỊCH</th>
+              <th scope="col">SỐ TIỀN</th>
+              <th scope="col">Thao tác</th>
+            </tr>
+          </thead>
+
+          <tbody class="text-center">
+            <tr *ngFor="let item of creditTransList, index as i">
+              <td> {{ i + 1 }} </td>
+              <td> {{ item.trn_ref_no}} </td>
+              <td> {{ item.description }} </td>
+              <td> {{ moneyToTextService.formatCurrency(item.amount) }} </td>
+              <td>
+                <button type="button" class="btn btn btn-inverse-info btn-sm" *ngIf="isHandTrans">
+                  <i class="fa fa-edit"></i>
+                </button>
+
+                <button type="button" class="btn btn-inverse-danger ms-1 btn-sm" (click)="onDeleteCreditTrans(item)">
+                  <i class="fa fa-trash-o"></i>
+                </button>
+              </td>
+            </tr>
+
+            <tr class="fw-bold">
+              <td colspan="3" class="text-danger"> TỔNG THU </td>
+              <td class="text-danger"> {{ moneyToTextService.formatCurrency(totalCreditAmount) }} </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-body ">
+      <h4 class="card-title">
+        TỔNG SỐ TIỀN
+        <span class="text-danger fw-bolder"> ({{ transTypeText }}) </span>
+      </h4> 
+
+      <div class="table-responsive mt-2">
+        <table class="table table-hover table-bordered">
+          <tbody>
+            <tr>
+              <td rowspan="2" width="150px" class="text-center fw-bolder">TỔNG SỐ TIỀN</td>
+              <td class="text-danger fw-bolder"> {{ moneyToTextService.formatCurrency(totalCreditDebitAmount) }} </td>
+            </tr>
+            <tr>
+              <td class="fw-bolder"> {{ amountText }} </td>
+            </tr>
+            <tr *ngIf="isShowContent">
+              <td class="text-center fw-bolder">NỘI DUNG BẢNG KÊ</td>
+              <td>
+                <textarea id="denomination_content" [(ngModel)]="payStatementDescription" rows="5" class="form-control form-control-sm text-uppercase"></textarea>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-body">
+      <div class="d-flex justify-content-start align-items-end">
+        <h4 class="card-title text-uppercase">CHI TIẾT BẢNG KÊ TIỀN</h4>
+
+        <div class="ms-4" *ngIf="isShowButton && totalCreditDebitAmount != 0">
+          <button type="button" class="btn btn-inverse-success" (click)="autoStatement()">Kê Tự Động</button>
+        </div>
+      </div>
+
+      <div class="table-responsive mt-3" style="position: relative;">
+        <table class="table table-striped table-hover table-bordered">
+          <thead>
+            <tr>
+              <th rowspan="2"> STT </th>
+              <th rowspan="2"> Mệnh giá </th>
+              <th [attr.colspan]="form.value.ccy == 'VND' ? 2 : 1"> Tồn quỹ </th>
+              <th [attr.colspan]="form.value.ccy == 'VND' ? 2 : 1"> Chi tiết bảng kê </th>
+              <th rowspan="2"> Thành tiền </th>
+            </tr>
+            <tr>
+              <th> {{ form.value.ccy.substr(0,3) != 'XAU' ? 'Số tờ (lành)' : 'Số miếng' }} </th>
+              <th *ngIf="form.value.ccy == 'VND'"> Số lượng tiền xu </th>
+
+              <th> {{ form.value.ccy.substr(0,3) != 'XAU' ? 'Số tờ (lành)' : 'Thành chỉ' }} </th>
+              <th *ngIf="form.value.ccy == 'VND'"> Số lượng tiền xu </th>
+            </tr>
+          </thead>
+
+          <tbody class="text-center">
+            <tr *ngFor="let item of availableFundsList, index as i">
+              <td> {{ i + 1 }} </td>
+              <td> {{ moneyToTextService.formatCurrency(item.price) }} </td>
+              <td> {{ moneyToTextService.formatCurrency(item.available_number_heal) }} </td>
+              <td *ngIf="form.value.ccy == 'VND'"> {{ moneyToTextService.formatCurrency(item.available_number_coin) }} </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': isShowButton && item.number_heal > 0  && item.available_number_heal < item.number_heal }"
+                  [allowNegativeNumbers]="true" [dropSpecialCharacters]="false" mask="separator.0" thousandSeparator="." [(ngModel)]="item.number_heal" (change)="calTotalAmount(item)" (focusout)="item.number_heal = item.number_heal || 0" />
+                <div *ngIf="isShowButton && item.number_heal > 0  && item.available_number_heal < item.number_heal" class="invalid-feedback">
+                  <small *ngIf="isShowButton && item.number_heal > 0  && item.available_number_heal < item.number_heal">Số tờ kê vượt số tờ tồn quỹ</small>
+                </div>
+              </td>
+
+              <td *ngIf="form.value.ccy == 'VND'">
+                <div *ngIf="item.price <= 5000; then thenAllowInput else elseNotAllowInput"> </div>
+                <ng-template #thenAllowInput>
+                  <input type="text" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': isShowButton && item.number_coin > 0  && item.available_number_coin < item.number_coin }"
+                    [allowNegativeNumbers]="true" [dropSpecialCharacters]="false" mask="separator.0" thousandSeparator="." [(ngModel)]="item.number_coin" (change)="calTotalAmount(item)" (focusout)="item.number_coin = item.number_coin || 0" />
+                  <div *ngIf="isShowButton && item.number_coin > 0  && item.available_number_coin < item.number_coin" class="invalid-feedback">
+                    <small *ngIf="isShowButton && item.number_coin > 0  && item.available_number_coin < item.number_coin ">Số lượng tiền xu kê vượt số lượng tiền xu tồn quỹ</small>
+                  </div>
+                </ng-template>
+
+                <ng-template #elseNotAllowInput>
+                  <input type="text" class="form-control form-control-sm" [allowNegativeNumbers]="true" [dropSpecialCharacters]="false" mask="separator.0" thousandSeparator="." [(ngModel)]="item.number_coin" disabled readonly />
+                </ng-template>
+              </td>
+
+              <td class="text-end">
+                <span>{{ moneyToTextService.formatCurrency(item.total) }}</span>
+              </td>
+            </tr>
+
+            <tr>
+              <td [attr.colspan]="form.value.ccy === 'VND'? 6 : 4" class="text-danger fw-bolder"> Cộng thành tiền </td>
+              <td class="text-end text-danger fw-bolder">{{ moneyToTextService.formatCurrency(totalAmount) }}</td>
+            </tr>
+
+            <tr>
+              <td [attr.colspan]="form.value.ccy === 'VND'? 6 : 4" class="text-danger fw-bolder"> Chênh lệch lẻ </td>
+              <td class="text-end text-danger fw-bolder">{{ moneyToTextService.formatCurrency(totalOddAmount) }}</td>
+            </tr>
+
+            <tr>
+              <td [attr.colspan]="form.value.ccy === 'VND'? 6 : 4" class="text-danger fw-bolder"> TỔNG CỘNG </td>
+              <td class="text-end text-danger fw-bolder">{{ moneyToTextService.formatCurrency(totalAllAmount) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-action class="mt-3 pull-right">
+  <button type="button" class="btn btn-primary me-2" [disabled]="isLoading" (click)="onSubmit()">
+    <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i>
+    Lưu
+  </button>
+  <button type="button" class="btn btn-secondary" (click)="closeFormDialog('close')">Thoát</button>
+</div>

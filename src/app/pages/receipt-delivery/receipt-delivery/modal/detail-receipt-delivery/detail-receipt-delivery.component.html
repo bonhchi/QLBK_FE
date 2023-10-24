@@ -1,0 +1,202 @@
+<div mat-dialog-title class="d-flex justify-content-between mb-2">
+  <div class="d-flex align-items-center ">
+    <h4 class="title-size mb-0 me-3">CHI TIẾT PHIẾU BBGN <span class="text-danger">{{ transferItem.delivery_code }}</span></h4>
+    <div [ngClass]="utilService.renderStatusClass(data.statusList, transferItem.status).custom_data" class="px-5 py-2 ms-3">
+      {{ utilService.renderStatusClass(data.statusList, transferItem.status).name }}
+    </div>
+  </div>
+
+  <img src="assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog('close')">
+</div>
+
+<div class="mat-dialog-content">
+  <div class="card">
+    <div class="card-body">
+      <form [formGroup]="form">
+        <div class="form-group row g-3">
+          <div class="col-4">
+            <h4 class="card-title text-uppercase mb-2">THÔNG TIN BIÊN BẢN GIAO NHẬN</h4>
+
+            <div class="form-group">
+              <label class="label">Ngày giao dịch</label>
+              <input formControlName="tran_date" type="text" class="form-control form-control-sm" bsDatepicker placeholder="DD/MM/YYYY" />
+            </div>
+
+            <div class="form-group">
+              <label>Loại giao dịch</label>
+              <ng-select [items]="transTypeList" bindLabel="name" bindValue="code" formControlName="tran_type"
+                [clearable]=false [selectOnTab]="true" class="form-control form-control-sm">
+              </ng-select>
+            </div>
+
+            <div class="form-group">
+              <label>Số lệnh điều chuyển</label>
+              <input type="text" formControlName="delivery_no" class="form-control form-control-sm" />
+            </div>
+          </div>
+
+          <div class="col-4 border-left">
+            <h4 class="card-title text-uppercase mb-2">THÔNG TIN ĐƠN VỊ GIAO</h4>
+
+            <div class="form-group">
+              <label>Đơn vị</label>
+              <input type="text" formControlName="from_branch_id" class="form-control form-control-sm" />
+            </div>
+
+            <div class="form-group">
+              <label>Người giao</label>
+              <input type="text" formControlName="from_delivery_user_id" class="form-control form-control-sm" />
+            </div>
+
+            <div class="form-group">
+              <label>Người nhận (Tổ điều chuyển)</label>
+              <input type="text" formControlName="from_receive_user_id" class="form-control form-control-sm" />
+            </div>
+          </div>
+
+          <div class="col-4 border-left">
+            <h4 class="card-title text-uppercase mb-2">THÔNG TIN ĐƠN VỊ NHẬN</h4>
+
+            <div class="form-group">
+              <label>Đơn vị</label>
+              <input type="text" formControlName="to_branch_id" class="form-control form-control-sm" />
+            </div>
+
+            <div class="form-group">
+              <label>Người giao (Tổ điều chuyển)</label>
+              <input type="text" formControlName="to_delivery_user_id" class="form-control form-control-sm" />
+            </div>
+
+            <div class="form-group">
+              <label>Người nhận</label>
+              <input type="text" formControlName="to_receive_user_id" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-body">
+      <h4 class="card-title text-uppercase mb-2">THÔNG TIN HẠCH TOÁN THU/CHI</h4>
+
+      <mat-tab-group>
+        <ng-container *ngFor="let item of transferItem.datas; index as i">
+          <mat-tab [label]="item.ccy">
+            <div class="form-group row my-3">
+              <div class="col-4">
+                <label class="label">Tổng tiền</label>
+                <input type="text" value="{{ moneyToTextService.formatCurrency(item.data?.tran_debit[0]?.total) }}" readonly class="form-control form-control-sm" disabled />
+              </div>
+
+              <div class="col-4">
+                <label class="label">Số giao dịch hạch toán chi</label>
+                <input type="text" value="{{ item.data?.tran_debit[0]?.fcc_ref_no }}" readonly class="form-control form-control-sm" disabled />
+              </div>
+
+              <div class="col-4">
+                <label class="label">Số giao dịch hạch toán thu</label>
+                <input type="text" value="{{ item.data?.tran_credit[0]?.fcc_ref_no }}" readonly class="form-control form-control-sm" disabled />
+              </div>
+            </div>
+
+            <h4 class="card-title text-uppercase mb-2 mt-4">CHI TIẾT BẢNG KÊ TIỀN</h4>
+            <div class="table-responsive">
+              <table class="table table-striped table-hover table-bordered">
+                <thead>
+                  <tr>
+                    <th rowspan="2"> STT </th>
+                    <th rowspan="2"> Mệnh giá </th>
+                    <th colspan="3"> Chi tiết bảng kê </th>
+                    <th rowspan="2"> Thành tiền </th>
+                  </tr>
+                  <tr>
+                    <th>Số tồn (lành)</th>
+                    <th>Số tồn (rách)</th>
+                    <th>Số miếng (kim loại)</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let v of item.data.def_price_detail; let i = index" class="text-center">
+                    <td> {{ i + 1 }} </td>
+                    <td> {{ moneyToTextService.formatCurrency(v.price) }} </td>
+                    <td>
+                      <input type="text" class="form-control form-control-sm" mask="separator.0" thousandSeparator="." disabled [(ngModel)]="item.number_heal" />
+                    </td>
+
+                    <td>
+                      <input type="text" class="form-control form-control-sm" mask="separator.0" thousandSeparator="." disabled [(ngModel)]="item.number_torn" />
+                    </td>
+
+                    <td *ngIf="form.value.ccy == 'VND'">
+                      <div *ngIf="item.price <= 5000; then thenAllowInput else elseNotAllowInput"> </div>
+                      <ng-template #thenAllowInput>
+                        <input type="text" class="form-control form-control-sm" mask="separator.0" thousandSeparator="." disabled [(ngModel)]="item.number_coin" />
+                      </ng-template>
+
+                      <ng-template #elseNotAllowInput>
+                        <input type="text" class="form-control form-control-sm" mask="separator.0" thousandSeparator="." [(ngModel)]="item.number_coin" disabled readonly />
+                      </ng-template>
+                    </td>
+
+                    <td *ngIf="form.value.ccy != 'VND'">
+                      <input type="text" class="form-control form-control-sm" mask="separator.0" thousandSeparator="." disabled [(ngModel)]="item.number_coin" />
+                    </td>
+
+                    <td class="text-center">
+                      <span>{{moneyToTextService.formatCurrency(item.total)}}</span>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td colspan="8" class="text-center text-danger fw-bold"> Cộng Thành Tiền </td>
+                    <td class="text-center text-danger fw-bold"> {{ moneyToTextService.formatCurrency(item.data.total_all_amount) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h4 class="card-title text-uppercase mb-2 mt-4">THÔNG TIN BAO NIÊM PHONG</h4>
+            <div class="table-responsive mt-3">
+              <table class="table table-sm table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th> STT </th>
+                    <th> Mã BNP</th>
+                    <th> Tên BNP</th>
+                    <th> Giá trị</th>
+                  </tr>
+                </thead>
+
+                <tbody class="text-center">
+                  <tr *ngFor="let b of item.data.sealbags; let i = index">
+                    <td> {{i + 1}} </td>
+                    <td> {{ b.name }} </td>
+                    <td> {{ b.code }} </td>
+                    <td> {{ moneyToTextService.formatCurrency(b.balance) }} </td>
+                  </tr>
+
+                  <tr *ngIf="item.data.sealbags?.length == 0">
+                    <td colspan="4" class="text-center"> Không có dữ liệu </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </mat-tab>
+
+        </ng-container>
+      </mat-tab-group>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-action class="pull-right">
+  <!-- <button type="button" class="btn btn-primary mt-3 me-1" (click)="onSave()" data-dismiss="modal">
+      Lưu
+    </button> -->
+  <button type="button" class="btn btn-danger mt-3" (click)="closeFormDialog('close')" data-dismiss="modal">
+    Thoát
+  </button>
+</div>

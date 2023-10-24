@@ -1,0 +1,125 @@
+<div class="row">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">THÔNG TIN TÌM KIẾM</h4>
+
+        <form class="" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="row form-group g-3">
+            <div class="col-2">
+              <label class="label">Loại giao dịch</label>
+              <ng-select [items]="categoryByCode" bindLabel="name" bindValue="code" formControlName="transaction_type"
+                [clearable]=false [selectOnTab]="true" class="form-control form-control-sm">
+              </ng-select>
+            </div>
+
+            <div class="col-2">
+              <label class="label">Ngày giao dịch</label>
+              <input formControlName="transaction_date" type="text" class="form-control form-control-sm" bsDatepicker placeholder="DD/MM/YYYY" />
+            </div>
+
+            <div class="col-2">
+              <label class="label">Số phiếu</label>
+              <input type="text" class="form-control form-control-sm" formControlName="transaction_code" />
+            </div>
+
+            <div class="col-4 ">
+              <label class="label">Đơn vị</label>
+              <ng-select bindLabel="display_name" bindValue="code" [items]="branchs" [searchable]="true"
+                formControlName="transaction_branch" [clearable]="false" class="form-control">
+              </ng-select>
+            </div>
+
+            <div class="col-2">
+              <label class="label">Tình trạng</label>
+              <ng-select bindLabel="name" bindValue="id" [items]="statusList" [searchable]="true"
+                formControlName="transaction_status" [clearable]="false" class="form-control">
+              </ng-select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary float-end" [disabled]="isLoading">
+            <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner': isLoading, 'fa-search me-1': !isLoading}"></i>
+            Tìm kiếm
+          </button>
+
+          <button type="button" (click)="onClearForm()" class="btn btn-light float-end me-2">
+            <i class="fa fa-refresh me-1"></i>
+            Reset
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3 form-group">
+      <h4 class="card-title">DANH SÁCH PHIẾU XUẤT NHẬP KHO</h4>
+
+      <button *ngIf="currentUser.role != 'KSV'" type="button" class="btn btn-success" (click)="openModal('Add', '')">
+        <i class="fa fa-plus me-1"></i>
+        Thêm mới
+      </button>
+    </div>
+
+    <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+      <p>Đang tải dữ liệu</p>
+    </ngx-spinner>
+
+    <div class="table-responsive min-height-500">
+      <table class="table table-striped table-hover table-bordered">
+        <thead>
+          <tr class="">
+            <th scope="col">STT</th>
+            <th scope="col">Mã đơn vị</th>
+            <th scope="col">Tên đơn vị</th>
+            <th scope="col">Số phiếu</th>
+            <th scope="col">Loại giao dịch</th>
+            <th scope="col">Ngày thực hiện</th>
+            <th scope="col">Loại tiền</th>
+            <th scope="col">Số tiền</th>
+            <th scope="col">Tình trạng</th>
+            <th scope="col">Ghi chú</th>
+            <th scope="col">Lý do hủy</th>
+            <th scope="col">Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody class="table-group-divider">
+          <tr class="text-center" *ngFor="let item of warehouseList, let i = index">
+            <th scope="row">{{i + 1}}</th>
+            <td>{{item.branch_id}}</td>
+            <td>{{getBranchValue(item.branch_id)}}</td>
+            <td>{{item.code}}</td>
+            <td>{{getValue(item.tran_type)}}</td>
+            <td>{{item.maker_at | date: 'dd/MM/yyyy'}}</td>
+            <td>{{item.ccy}}</td>
+            <td>{{item.balance}}</td>
+            <td>
+              <span [ngClass]="utilService.renderStatusClass(statusList, item.status).custom_data"> {{ utilService.renderStatusClass(statusList, item.status).name }} </span>
+            </td>
+            <td>{{item.description}}</td>
+            <td>{{item.reason_cancel}}</td>
+            <td>
+              <button type="button" class="btn btn-xs btn-inverse-primary" (click)="openModal('View', item)">
+                <i class="fa fa-desktop"></i>
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="warehouseList.length == 0">
+            <td colspan="12" class="text-center">Không tìm thấy dữ liệu</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card-footer bg-white p-0">
+    <div class="footable-paging">
+      <mat-paginator [length]="pageEvent.length" [pageIndex]="pageEvent.pageIndex" [pageSize]="pageEvent.pageSize" [pageSizeOptions]="[5, 10, 25, 100]" (page)="setPaginatorData($event)"></mat-paginator>
+    </div>
+  </div>
+</div>

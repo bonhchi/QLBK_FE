@@ -1,0 +1,21 @@
+<div *ngIf="confirmModal">
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block!important">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ confirmModal.title }}</h5>
+                    <button type="button" (click)="confirmModal.cancelFn()" class="close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [innerHTML]="transform(confirmModal.message)">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" (click)="confirmModal.okFn()" class="btn btn-primary">Xác nhận</button>
+                    <button type="button" (click)="confirmModal.cancelFn()" class="btn btn-secondary" >Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

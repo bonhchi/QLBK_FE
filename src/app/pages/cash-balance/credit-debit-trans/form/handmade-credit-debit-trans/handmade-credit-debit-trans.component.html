@@ -1,0 +1,36 @@
+<div mat-dialog-title class="d-flex justify-content-between mb-3">
+    <h4 class="title-size">NHẬP GIAO DỊCH <span class="text-danger">{{data.drcr_ind}}</span></h4>
+    <img src="./assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog(closeDialog)">
+</div>
+
+<div mat-dialog-content>
+    <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <form class="" [formGroup]="form" (ngSubmit)="onSubmit()">
+                        <div class="form-group row g-3">
+                            <div class="col-12">
+                                <label class="label">Nội dung giao dịch</label>
+                                <textarea formControlName="description" rows="9" placeholder="Nội dung giao dịch" 
+                                    maxlength="250" class="form-control form-control-sm text-uppercase"
+                                    [ngClass]="{ 'is-invalid': submitted && f.description.errors }">
+                                </textarea>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="label">Số tiền</label>
+                                <input type="text" formControlName="amount" [mask]="mask" thousandSeparator="." maxlength="19" [ngClass]="{ 'is-invalid': submitted && f.amount.errors }" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div mat-dialog-action class="mt-3 pull-right">
+    <button type="button" class="btn btn-primary me-2" (click)="onSubmit()"> Lưu </button>
+    <button type="button" class="btn btn-secondary" (click)="closeFormDialog(closeDialog)"> Thoát </button>
+</div>

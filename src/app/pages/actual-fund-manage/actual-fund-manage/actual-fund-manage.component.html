@@ -1,0 +1,113 @@
+<div class="card">
+  <div class="card-body">
+    <form class="form-group" [formGroup]="form" (ngSubmit)="onSearch()">
+      <h4 class="card-title">THÔNG TIN TÌM KIẾM</h4>
+      <div class="row">
+        <div class="col-3">
+          <label class="label">Đơn vị</label>
+          <ng-select [items]="branchList" formControlName="branch_code" bindValue="code" bindLabel="display_name"
+            [clearable]=false [selectOnTab]="true" class="form-control form-control-sm">
+          </ng-select>
+        </div>
+        <div class="col-3">
+          <label class="label">Ngày giao dịch</label>
+          <input type="text" class="form-control form-control-sm" formControlName="date" bsDatepicker />
+        </div>
+        <div class="col-3">
+          <label class="label">User id</label>
+          <input type="text" class="form-control form-control-sm text-uppercase" formControlName="user" />
+        </div>
+      </div>
+      <div class="text-end mt-3">        
+        <button type="submit" class="btn btn-info me-2" (click)="openForm('BRANCH', {})">
+          <i class="fa fa-bank me-2"></i>
+          Xem thông tin đơn vị
+        </button>
+
+        <button type="button" (click)="resetFilter()" class="btn btn-light me-2">
+          <i class="fa fa-refresh me-2"></i>
+          Reset
+        </button>
+
+        <button type="submit" [disabled]="isLoading" class="btn btn-primary">
+          <i class="fs-12-px fa me-2" [ngClass]="{'fa-spin fa-spinner': isLoading, 'fa-search': !isLoading}"></i>
+          Tìm kiếm
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="card mt-3">
+  <div class="card-body">
+
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center ">
+        <h4 class="card-title mb-0">THÔNG TIN TỒN QUỸ THỰC TẾ VÀ KHÓA/MỞ SỔ</h4>
+        <div class=" text-center rounded-pill ms-3 " [ngClass]="renderFundStatus(status).color" *ngIf="isCurrentDate" >
+          {{ renderFundStatus(status).name }}
+        </div>
+        
+      </div>
+      <div class="d-flex justify-content-start align-items-center">
+        <button type="button" *ngIf="isShowBtnUnlock && status == 'KHOA_SO' && isCurrentDate" class="btn btn-success me-2" (click)="onUnlock()" [disabled]="isLoadingUnlock">
+          <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner': isLoadingUnlock, 'fa-unlock me-1': !isLoadingUnlock}"></i>
+          Mở sổ
+        </button>
+
+        <button type="button" *ngIf="isShowBtnLock && status == 'MO_SO' && isCurrentDate" class="btn btn-danger me-2" (click)="onLock()" [disabled]="isLoadingLock">
+          <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner': isLoadingLock, 'fa-lock me-1': !isLoadingLock}"></i>
+          Khóa sổ
+        </button>
+
+        <button type="button" *ngIf="isShowBtnApproval && status == 'CHO_DUYET_MO_SO' && isCurrentDate"  class="btn btn-primary me-2" (click)="onApproval()" [disabled]="isLoadingApproval">
+          <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner': isLoadingApproval, 'fa-check-square-o me-1': !isLoadingApproval}"></i>
+          Duyệt
+        </button>
+
+        <button type="button" *ngIf="isShowBtnReject && status == 'CHO_DUYET_MO_SO' && isCurrentDate"  class="btn btn-danger me-2" (click)="onReject()" [disabled]="isLoadingReject">
+          <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner': isLoadingReject, 'fa-times-rectangle me-1': !isLoadingReject}"></i>
+          Từ chối
+        </button>
+
+        <button type="button" *ngIf="isShowBtnChangeDate && status == 'KHOA_SO' && isCurrentDate" class="btn btn-warning" (click)="onChangeDate()" [disabled]="isLoadingChangeDate">
+          <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner': isLoadingChangeDate, 'fa-calendar me-1': !isLoadingChangeDate}"></i>
+          Chuyển ngày
+        </button>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-3">
+      <table class="table table-striped table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Loại tiền</th>
+            <th>Tồn quỹ tiền mặt thực tế</th>
+            <th>Hold</th>
+            <th>Tồn quỹ theo Till ID</th>
+            <th>Chênh lệch (Tool - Till FCC)</th>
+            <th>Tổng lẻ tích lũy</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody class="table-group-divider text-center">
+          <tr class="text-center" *ngFor="let item of denoBranchList , index as i">
+            <td> {{ i+1}} </td>
+            <td> {{ item.code}} </td>
+            <td> {{ moneyToTextService.formatCurrency(item.balance) }} </td>
+            <td> {{ moneyToTextService.formatCurrency(item.balance_hold) }} </td>
+            <td> {{ moneyToTextService.formatCurrency(item.balance_till_id) }} </td>
+            <td> {{ moneyToTextService.formatCurrency(item.total_pence) }} </td>
+            <td> {{ moneyToTextService.formatCurrency(item.total_odd) }} </td>
+            <td>
+              <button type="button" class="btn btn-sm btn-inverse-primary ms-1" data-toggle="tooltip" title="Xem chi tiết" (click)="openForm('DETAIL',item)">
+                <i class="mdi mdi-desktop-mac"></i>
+              </button>
+            </td>
+          </tr>
+      </table>
+    </div>
+
+  </div>
+</div>

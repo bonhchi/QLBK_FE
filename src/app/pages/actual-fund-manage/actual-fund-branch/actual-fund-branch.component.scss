@@ -1,0 +1,143 @@
+.item-center{
+  line-height: 50px;
+}
+.equilibrium td{
+  position: relative;
+  height: 200px;
+}
+
+.equilibrium .sup{
+  display: block;
+  position: relative;
+  width: 50%;
+  float: left;
+  padding-bottom: 15%;
+  line-height: 100%;
+  text-align: center;
+  z-index: 1;
+}
+
+.equilibrium .inf{
+  display: block;
+  position: relative;
+  width: 50%;
+  float: left;
+  padding-top: 15%;
+  line-height: 100%;
+  text-align: center;
+  z-index: 1;
+}
+
+.equilibrium td::after{
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: red;
+  background-size: cover;
+  clip-path: polygon(100% 0%, 0% 0%, 0% 100%);
+}
+.equilibrium{
+  width: 100%;
+  background: #ffff;
+}
+
+.equilibrium .item-user{
+  position: relative;
+  height: 30px !important;
+}
+
+.equilibrium .role{
+  display: block;
+  position: relative;
+  width: 50%;
+  top:30%;
+  right: 10%;
+  line-height: 100%;
+  text-align: center;
+  z-index: 1;
+}
+
+.equilibrium .price{
+  display: block;
+  position: relative;
+  width: 50%;
+  bottom:70%;
+  float: right;
+  padding-top: 15%;
+  line-height: 100%;
+  text-align: center;
+  z-index: 1;
+}
+
+.equilibrium .item-user::after{
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(245, 247, 250, 0.8);
+  background-size: cover;
+  clip-path: polygon(100% 100%, 0% 0%, 0% 100%);
+}
+.status-closeout{
+  display: flex;
+  align-items: center;
+}
+.status-fund{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  margin-left: 5px;
+  width: 150px;
+  height: 35px;
+  text-align: center;
+  background-color: #e9ecef;
+}
+
+.equilibrium .user-detail::after{
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(245, 247, 250, 0.8);
+  background-size: cover;
+  clip-path: polygon(100% 100%, 0% 0%, 0% 100%);
+}
+
+.equilibrium .user-detail{
+  position: relative;
+  height: 30px !important;
+}
+
+.equilibrium .role-detail{
+  display: block;
+  position: relative;
+  width: 80%;
+  top:60%;
+  left:2%;
+  line-height: 100%;
+  text-align: center;
+  z-index: 1;
+}
+
+.equilibrium .price-detail{
+  display: block;
+  position: relative;
+  width: 50%;
+  bottom:70%;
+  float: right;
+  padding-top: 15%;
+  line-height: 100%;
+  text-align: center;
+  z-index: 1;
+}

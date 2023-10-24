@@ -1,0 +1,19 @@
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+           
+          <mat-tab-group mat-align-tabs="start" >
+             <mat-tab label="QUẢN LÝ NIÊM PHONG ĐƠN VỊ">
+                 <div class="card-body">
+                     <app-sealbag-branch></app-sealbag-branch>
+                 </div>
+                 <!-- <app-cust-info-cctg [transactionCTTG]="transactionCTTG" (doCheckTran)="doCheckTran($event)"></app-cust-info-cctg> -->
+             </mat-tab>
+             <mat-tab label="QUẢN LÝ HẠN MỨC">
+                 <div class="card-body">
+                     <app-sealbag-limit></app-sealbag-limit>
+                 </div>
+                 <!-- <app-sealbag-limit [transactionCTTG]="transactionCTTG" (doCheckTran)="doCheckTran($event)"></app-sealbag-limit> -->
+             </mat-tab>
+          </mat-tab-group>
+    </div>
+ </div>

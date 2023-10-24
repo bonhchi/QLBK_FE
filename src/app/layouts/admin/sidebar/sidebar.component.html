@@ -1,0 +1,46 @@
+<nav class="sidebar sidebar-offcanvas vh-100" id="sidebar">
+    <ul class="nav">
+        <li class="nav-item nav-profile mb-2">
+            <a href="#" class="nav-link flex-column">
+                <div class="pl-3 pr-5 w-100">
+                    <img src="https://www.scb.com.vn/images/logo.svg" alt="logo" class="img-fluid">
+                </div>
+                <div class="nav-profile-text d-flex ms-0 mb-3 flex-column">
+                    <p class="mb-1 font-weight-bold mb-2 mt-3 text-center text-uppercase"> {{currentUser?.fullname}}</p>
+                    <p class="mb-1 text-secondary icon-sm text-center nav-item-head p-0 text-truncate">
+                        {{currentUser?.username}} - {{currentUser?.positions?.branch?.code}} - {{currentUser?.positions?.branch?.name}}
+                    </p>
+                    <p class="mb-1 text-secondary icon-sm text-center nav-item-head p-0 text-truncate">
+                        {{currentUser?.roleName?.join(' - ')}}
+                    </p>
+                </div>
+            </a>
+        </li>
+
+        <ng-container *ngFor="let menu of menus; index as i;">
+            <li class="nav-item py-0 px-3" routerLinkActive="active" #checkActive="routerLinkActive"  [routerLinkActiveOptions]="{exact: true}" (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)">
+                <ng-container *ngIf="menu.menus?.length === 0">
+                    <a class="nav-link" routerLinkActive="active" routerLink="{{menu.url.toLowerCase()}}" [routerLinkActiveOptions]="{exact: true}" >
+                        <i class="{{menu.icon}}"></i>
+                        <span class="menu-title">{{menu.name}}</span>
+                    </a>
+                </ng-container>
+                
+                <ng-container *ngIf="menu.menus?.length > 0">
+                    <a class="nav-link" data-bs-toggle="collapse" [attr.href]="'#menu_' + menu.id" [attr.aria-expanded]="checkActive ? true : false" [attr.aria-controls]="'menu_' + menu.id">
+                        <i class="{{menu.icon}}"></i>
+                        <span class="menu-title">{{menu.name}}</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" routerLinkActive="show" [routerLinkActiveOptions]="{exact: true}" [attr.id]="'menu_' + menu.id">
+                        <ul class="nav flex-column sub-menu">
+                            <li *ngFor="let menu_chir of menu.menus" class="nav-item">
+                                <a class="nav-link" routerLinkActive="active" routerLink="{{menu_chir.url.toLowerCase()}}" [routerLinkActiveOptions]="{exact: true}">{{menu_chir.name}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </ng-container>
+            </li>
+        </ng-container>
+    </ul>
+</nav>

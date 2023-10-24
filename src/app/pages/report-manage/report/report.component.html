@@ -1,0 +1,147 @@
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title text-uppercase">Báo cáo</h4>
+
+                <div class="row g-3">
+                    <div class="col-4">
+                        <ul class="nav nav-tabs nav-tabs-vertical fs-13-px custom-nav" role="tablist">
+                            <li class="nav-item">
+                                <a class="p-2 nav-link active" id="report-01-tab" data-bs-toggle="tab"
+                                        href="#report-01" role="tab" aria-controls="report-01" aria-selected="true">
+                                    Mẫu 01 - Sổ kiểm kê quỹ giữa giờ / đột xuất (GDV, Quỹ Phụ_Trước hoàn quỹ)
+                                </a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="p-2 nav-link" id="report-02-tab" data-bs-toggle="tab" href="#report-02"
+                                    role="tab" aria-controls="report-02" aria-selected="false">
+                                    Mẫu 02 - Sổ kiểm kê quỹ cuối ngày (GDV, Quỹ Phụ_Trước hoàn quỹ)
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="p-2 nav-link" id="report-03-tab" data-bs-toggle="tab" href="#report-03"
+                                    role="tab" aria-controls="report-03" aria-selected="false">
+                                    Mẫu 03 - Sổ kiểm kê quỹ cuối ngày (GDV, Quỹ phụ_Sau hoàn quỹ)
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="p-2 nav-link" id="report-04-tab" data-bs-toggle="tab" href="#report-04"
+                                    role="tab" aria-controls="report-04" aria-selected="false">
+                                    Mẫu 04 - Sổ kiểm kê quỹ giữa giờ / đột xuất (Quỹ chính_Đơn vị tồn quỹ)
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="p-2 nav-link" id="report-05-tab" data-bs-toggle="tab" href="#report-05"
+                                    role="tab" aria-controls="report-05" aria-selected="false">
+                                    Mẫu 05 - Sổ kiểm kê quỹ cuối ngày (Quỹ chính_Đơn vị tồn quỹ)
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="p-2 nav-link" id="report-06-tab" data-bs-toggle="tab" href="#report-06"
+                                    role="tab" aria-controls="report-05" aria-selected="false">
+                                    Mẫu 06 - Sổ kiểm kê quỹ kiêm biên bản giao nhận (Đơn vị không tồn quỹ)
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="p-2 nav-link" id="report-07-tab" data-bs-toggle="tab" href="#report-07"
+                                    role="tab" aria-controls="report-07" aria-selected="false">
+                                    Mẫu 07 - Biên bản kiểm kê quỹ và các tài sản khác cuối tháng (Quỹ chính của đơn vị tồn quỹ)
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="p-2 nav-link" id="report-08-tab" data-bs-toggle="tab" href="#report-08"
+                                    role="tab" aria-controls="report-08" aria-selected="false">
+                                    Mẫu 08 - Biên bản kiểm kê quỹ và các tài sản khác cuối tháng / kiêm biên bản giao nhận (Đơn vị không tồn quỹ)
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="p-2 nav-link" id="report-09-tab" data-bs-toggle="tab" href="#report-09"
+                                    role="tab" aria-controls="report-09" aria-selected="false">
+                                    Mẫu 09 - Biên bản kiểm kê bàn giao tài sản (Quỹ chính_Đơn vị có tồn quỹ)
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="p-2 nav-link" id="report-10-tab" data-bs-toggle="tab" href="#report-10"
+                                    role="tab" aria-controls="report-10" aria-selected="false">
+                                    Mẫu 10 - Biên bản kiểm kê bàn giao tài sản (Quỹ chính_Đơn vị không tồn quỹ)
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="p-2 nav-link" id="report-11-tab" data-bs-toggle="tab" href="#report-11"
+                                    role="tab" aria-controls="report-11" aria-selected="false">
+                                    Mẫu 11 - Biên bản kiểm kê chi tiết bao/thùng niêm phong (Đơn vị cấp cha quản lý đơn vị không tồn quỹ)
+                                </a>
+                            </li>
+
+                            <!-- <li class="nav-item">
+                                <a class="p-2 nav-link" id="report-10-tab" data-bs-toggle="tab" href="#report-10"
+                                    role="tab" aria-controls="report-10" aria-selected="false">
+                                    Mẫu 11 - Biên bản kiểm kê chi tiết bao/thùng niêm phong
+                                </a>
+                            </li> -->
+                        </ul>
+                    </div>
+
+                    <div class="col-8">
+                        <div class="tab-content tab-content-vertical">
+                            <div class="tab-pane fade show active" id="report-01" role="tabpanel" aria-labelledby="report-01-tab">
+                                <app-report01 [branchList]="branchList"  [parentBranchList]="parentBranchList" [userList]="userList" [reportType]="reportType"></app-report01>
+                            </div>
+
+                            <div class="tab-pane fade" id="report-02" role="tabpanel" aria-labelledby="report-02-tab">
+                                <app-report02 [branchList]="branchList" [parentBranchList]="parentBranchList" [userList]="userList" [reportType]="reportType"></app-report02>
+                            </div>
+
+                            <div class="tab-pane fade" id="report-03" role="tabpanel" aria-labelledby="report-03-tab">
+                                <app-report03 [branchList]="branchList" [parentBranchList]="parentBranchList" [userList]="userList" [reportType]="reportType"></app-report03>
+                            </div>
+
+                            <div class="tab-pane fade" id="report-04" role="tabpanel" aria-labelledby="report-04-tab">
+                                <app-report04 [branchList]="branchList" [parentBranchList]="parentBranchList" [userList]="userList" [reportType]="reportType"></app-report04>
+                            </div>
+
+                            <div class="tab-pane fade" id="report-05" role="tabpanel" aria-labelledby="report-05-tab">
+                                <app-report05 [branchList]="branchList" [parentBranchList]="parentBranchList" [userList]="userList" [reportType]="reportType"></app-report05>
+                            </div>
+
+                            <div class="tab-pane fade" id="report-06" role="tabpanel" aria-labelledby="report-06-tab">
+                                <app-report06 [branchList]="branchList" [parentBranchList]="parentBranchList" [userList]="userList" [reportType]="reportType"></app-report06>
+                            </div>
+
+                            <div class="tab-pane fade" id="report-07" role="tabpanel" aria-labelledby="report-07-tab">
+                                <app-report07 [branchList]="branchList" [parentBranchList]="parentBranchList" [userList]="userList" [reportType]="reportType"></app-report07>
+                            </div>
+
+                            <div class="tab-pane fade" id="report-08" role="tabpanel" aria-labelledby="report-08-tab">
+                                <app-report08 [branchList]="branchList" [parentBranchList]="parentBranchList" [userList]="userList" [reportType]="reportType"></app-report08>
+                            </div>
+
+                            <div class="tab-pane fade" id="report-09" role="tabpanel" aria-labelledby="report-09-tab">
+                                <app-report09 [branchList]="branchList" [parentBranchList]="parentBranchList" [userList]="userList" [reportType]="reportType"></app-report09>
+                            </div>
+
+                            <div class="tab-pane fade" id="report-10" role="tabpanel" aria-labelledby="report-10-tab">
+                                <app-report10 [branchList]="branchList" [parentBranchList]="parentBranchList" [userList]="userList" [reportType]="reportType"></app-report10>
+                            </div>
+
+                            <div class="tab-pane fade" id="report-11" role="tabpanel" aria-labelledby="report-11-tab">
+                                <app-report11 [branchList]="branchList" [parentBranchList]="parentBranchList" [userList]="userList" [reportType]="reportType"></app-report11>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

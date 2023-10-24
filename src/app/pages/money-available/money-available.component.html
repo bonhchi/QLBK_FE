@@ -1,0 +1,104 @@
+<div mat-dialog-title class="d-flex justify-content-between mb-3">
+  <div class="d-flex align-items-center ">
+    <h4 class="title-size mb-0">
+      <span>TỒN QUỸ KHẢ DỤNG - </span> <span class="text-danger">{{data.dateTime}}</span>
+    </h4>
+  </div>
+  <img src="assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog('close')">
+</div>
+<div mat-dialog-content>
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title text-uppercase ">THÔNG TIN TÌM KIẾM</h4>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="row d-flex justify-content-start align-items-end">
+          <div class="col-3">
+            <div class="form-group">
+              <label for="categoryCurrency">Loại tiền</label>
+              <ng-select id="categoryCurrency" [items]="ccys" bindLabel="name" bindValue="id" formControlName="ccy"
+                [clearable]=false class="form-control form-control-inverse ng-select-outline">
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group">
+              <label>Loại giao dịch </label>
+              <ng-select [items]="system_id" bindLabel="name" bindValue="id" [clearable]=false
+                placeholder="Chọn Lock loại giao dịch" formControlName="system_id"
+                class="form-control form-control-inverse ng-select-outline">
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group">
+              <label>Trạng thái </label>
+              <ng-select [items]="moneyAvailableType" bindLabel="name" bindValue="id" [clearable]=false
+                formControlName="status" class="form-control form-control-inverse ng-select-outline">
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <button class="btn btn-primary " type="submit" [disabled]="isLoading">
+                <i class="fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i>
+                Tra cứu
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-body">
+      <h4 class="card-title text-uppercase ">
+       <span>DANH SÁCH TIỀN TỒN </span>  
+      <span class="text-danger"> (Tổng cộng: {{moneyToText.formatCurrency(total)}})</span>
+      </h4>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th rowspan="2" class="middle text-center">Mệnh giá</th>
+              <th colspan="3" class="text-center">Số tiền</th>
+              <th rowspan="2" class="middle text-center">Thành tiền</th>
+            </tr>
+            <tr>
+              <th>Lành</th>
+              <th>Rách</th>
+              <th>Kim loại</th>
+            </tr>
+
+          </thead>
+          <tbody *ngIf="moneyAvailable.length > 0">
+            <tr *ngFor="let money of moneyAvailable">
+              <td class="text-center">{{moneyToText.formatCurrency(money.price)}}</td>
+              <td class="text-center">{{moneyToText.formatCurrency(money.number_heal)}}</td>
+              <td class="text-center">{{moneyToText.formatCurrency(money.number_torn)}}</td>
+              <td class="text-center">{{moneyToText.formatCurrency(money.number_coin)}}</td>
+              <td class="text-end font-weight-bold">{{ moneyToText.formatCurrency(money.total) }}</td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="moneyAvailable.length == 0">
+            <tr>
+              <td colspan="5" class="text-center">Không có dữ liệu</td>
+            </tr>
+          </tbody>
+          <tfoot *ngIf="moneyAvailable.length > 0">
+            <tr class="bg-light-primary">
+              <td colspan="4" class="text-center">
+                <b>Tổng cộng</b>
+              </td>
+              <td class="text-end">
+                <b class="text-danger"> {{moneyToText.formatCurrency(total)}} </b>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

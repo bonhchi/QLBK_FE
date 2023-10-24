@@ -1,0 +1,186 @@
+<div class="row">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title text-uppercase">Thông tin tìm kiếm</h4>
+
+        <form class="row" [formGroup]="form" (ngSubmit)="onSearch()">
+
+          <div class="col-3">
+            <div class="form-group">
+              <label for="listCcy">Loại tiền</label>
+              <ng-select [items]="ccyList" bindLabel="name" bindValue="code" [clearable]=false [selectOnTab]="true"
+                placeholder="--- Chọn loại tiền ---" formControlName="ccy" class="form-control form-control-sm">
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label for="listStatus">Trạng thái</label>
+              <ng-select [items]="statusList" formControlName="status" bindLabel="name" [clearable]=false
+                [selectOnTab]="true" bindValue="code" class="form-control form-control-sm">
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group">
+              <label>Đơn vị</label>
+              <ng-select [items]="branchList" formControlName="branch_id" bindValue="code" bindLabel="display_name"
+                [clearable]=false class="form-control form-control-sm">
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group">
+              <label>Số tiền</label>
+              <input type="text"  mask="separator.3" thousandSeparator="." formControlName="amount" class="form-control form-control-sm"
+                placeholder="Nhập số tiền" />
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group">
+              <label>Số giấy DN</label>
+              <input type="text" formControlName="code" class="form-control form-control-sm"
+                placeholder="Nhập số giấy đề nghị" />
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group">
+              <label>Số REF</label>
+              <input type="text" formControlName="fcc_ref_no" class="form-control form-control-sm"
+                placeholder="Nhập mã giao dịch core fcc" />
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-group">
+              <label class="label">Ngày tạo</label>
+              <input formControlName="created_date" type="text" class="form-control form-control-sm" bsDatepicker
+                placeholder="DD/MM/YYYY" />
+            </div>
+          </div>
+          
+          <div class="mt-2">
+            <button type="submit" class="btn btn-primary float-end" [disabled]="isLoading">
+              <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner': isLoading, 'fa-search me-1': !isLoading}"></i>
+              Tìm kiếm
+            </button>
+            <button type="button" (click)="onClearForm()" class="btn btn-light float-end me-2">
+              <i class="fa fa-refresh me-1"></i> Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card mt-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between mb-3">
+      <h4 class="card-title">DANH SÁCH THÔNG TIN</h4>
+
+      <button *ngIf="permit.is_add" type="button" class="btn btn-success float-end" (click)="openForm('ADD','')">
+        <i class="fa fa-plus me-1"></i>Thêm mới
+      </button>
+    </div>
+
+    <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+      <p>Đang tải dữ liệu</p>
+    </ngx-spinner>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>
+              Đơn vị/<br>
+              Loại đề nghị/<br>
+              Vai trò
+            </th>
+            <th>Số giấy đề nghị/<br>
+              Ngày đề nghị 
+            </th>
+            <th>
+              Số tiền/<br>
+              Loại tiền
+            </th>
+            <th> Số REF/<br>
+              Function ID</th>
+            <th> Người tạo </th>
+            <th> Người duyệt </th>
+
+            <th> Trạng thái </th>
+            <th> Lý do hủy </th>
+            <th> Thao tác </th>
+          </tr>
+        </thead>
+
+        <tbody class="table-group-divider text-center" *ngIf="listAdvanceFund.length > 0">
+          <tr *ngFor="let item of listAdvanceFund; index as i">
+            <td scope="row"> {{ i + 1 }} </td>
+            <td>
+              <p class="mb-1">{{ item.branch_id }}</p>
+              <p class="mb-1">{{ renderDataAdvanceFund(item.tran_type )}}</p>
+              <p class="mb-0">{{ renderDataAdvanceRole(item.role_func_id)}}</p>
+            </td>
+            <td>
+              <p class="mb-1">{{ item.code }}</p>
+              <p class="mb-0">{{item.maker_at | date: 'dd/MM/yyyy HH:mm:ss'}}</p>
+            </td>
+            <td>
+              <span class="fw-bold fst-italic">{{_moneyToTextService.formatCurrency(item.balance)}} {{ item.ccy }}</span>
+            </td>
+            <td class="fw-bold">
+              <p class="mb-1">{{ item.fcc_ref_no ? item.fcc_ref_no : '-' }}</p>
+              <p class="mb-1">{{ item.fcc_func_id ? item.fcc_func_id : '-' }}</p>
+            </td>
+            <td>
+              {{ item.maker_id}}
+            </td>
+            <td> {{ item.checker_id}}</td>
+            <td class="text-center  cursor-pointer">
+              <div class="" [ngClass]="renderDataAdvanceStatus(item.status).color">
+                {{this.renderDataAdvanceStatus(item.status).name}}
+              </div>
+            </td>
+            <td>{{ item.reason_cancel }}</td>
+
+            <td>
+              <button type="button" class="btn btn-xs btn-inverse-primary ms-1" data-toggle="tooltip"
+                title="Xem chi tiết" (click)="openForm('DETAIL',item)">
+                <i class="mdi mdi-desktop-mac"></i>
+              </button>
+              <!-- <button type="button" class="btn btn-xs btn-inverse-success ms-1" data-toggle="tooltip" title="Cập nhật"
+                (click)="openForm('EDIT',item)">
+                <i class="fa fa-edit"></i>
+              </button> -->
+              <!-- <button type="button"  class="btn btn-sm btn-inverse-danger ms-1" data-toggle="tooltip" title="Xóa"
+                (click)="onDelete(item.id)">
+                <i class="mdi mdi-delete"></i>
+              </button> -->
+            </td>
+          </tr>
+        </tbody>
+
+        <tbody class="table-group-divider" *ngIf="listAdvanceFund.length == 0">
+          <tr class="text-center">
+            <td colspan="14">Không có dữ liệu</td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+  <div class="card-footer bg-white p-0">
+    <div class="footable-paging">
+      <mat-paginator [length]="pageEvent.length" [pageIndex]="pageEvent.pageIndex" [pageSize]="pageEvent.pageSize"
+        [pageSizeOptions]="[5, 10, 25, 100]" (page)="setPaginatorData($event)"></mat-paginator>
+    </div>
+  </div>
+
+</div>

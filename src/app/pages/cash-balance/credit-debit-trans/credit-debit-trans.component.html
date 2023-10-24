@@ -1,0 +1,179 @@
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title text-uppercase">Thông tin tìm kiếm</h4>
+
+                <form class="" [formGroup]="form" (ngSubmit)="onSearch()">
+                    <div class="form-group row g-3">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="listCDtype">Loại bảng kê</label>
+                                <ng-select [items]="statementTypeList" bindLabel="name" bindValue="code"
+                                    [clearable]=false [selectOnTab]="true" placeholder="--- Chọn loại bảng kê---"
+                                    formControlName="tran_type" class="form-control form-control-sm">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="listCcy">Loại tiền</label>
+                                <ng-select [items]="ccyList" bindLabel="name" bindValue="code" [clearable]=false
+                                    [selectOnTab]="true" placeholder="--- Chọn loại tiền ---" formControlName="ccy"
+                                    class="form-control form-control-sm">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <label class="label">Ngày tạo</label>
+                            <input formControlName="created_date" type="text" class="form-control form-control-sm" bsDatepicker placeholder="DD/MM/YYYY" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row g-3">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label>Số bảng kê/BBGN</label>
+                                <input type="text" placeholder="Số bảng kê" formControlName="code" class="form-control form-control-sm" placeHolderCharacter="*" />
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label>Số Ref</label>
+                                <input type="text" placeholder="Số ref" formControlName="tran_ref_fcc" class="form-control form-control-sm" placeHolderCharacter="*" />
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="exampleInputCreatorCMND">CIF/CMND/CCCD/HC</label>
+                                <input formControlName="cif" type="text" class="form-control form-control-sm" placeholder="CIF/CMND/CCCD/HC" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row g-3">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="listCDtype">Đơn vị</label>
+                                <ng-select [items]="branchList" bindLabel="display_name" bindValue="code"
+                                    [clearable]=false [selectOnTab]="true" placeholder="--- Chọn đơn vị---"
+                                    formControlName="branch_id" class="form-control form-control-sm">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="labelUserId">Tài khoản User</label>
+                                <ng-select [items]="userList" bindLabel="display_role_name" bindValue="user_name"
+                                    [clearable]=false [selectOnTab]="true" placeholder="--- Chọn tài khoản user---"
+                                    formControlName="user_name" class="form-control form-control-sm">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="listStatus">Tình trạng</label>
+                                <ng-select [items]="statusList" bindLabel="name" bindValue="code"
+                                    [clearable]=false [selectOnTab]="true" placeholder="--- Chọn tình trạng---"
+                                    formControlName="status" class="form-control form-control-sm">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary float-end" [disabled]="isLoading">
+                        <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner': isLoading, 'fa-search me-1': !isLoading}"></i>
+                        Tìm kiếm
+                    </button>
+
+                    <button type="button" (click)="onClearForm()" class="btn btn-light float-end me-2">
+                        <i class="fa fa-refresh me-1"></i>
+                        Reset
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between mb-3">
+            <h4 class="card-title">DANH SÁCH THÔNG TIN</h4>
+
+            <button type="button" class="btn btn-success float-end" *ngIf="permit.is_add"  (click)="openForm('ADD','')"> 
+                <i class="fa fa-plus me-1"></i>
+                Thêm mới
+            </button>
+        </div>
+
+        <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false" name="CreditDebitTransComponent">
+            <p>Đang tải dữ liệu</p>
+        </ngx-spinner>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th> STT </th>
+                        <th> Số bảng kê/BBGN </th>
+                        <th> Loại bảng kê</th>
+                        <th> CIF </th>
+                        <th> Tên khách hàng </th>
+                        <th> Số tiền </th>
+                        <th> Loại tiền </th>
+                        <th> Ngày tạo </th>
+                        <th> Người tạo </th>
+                        <th> Tình trạng </th>
+                        <th> Thao tác </th>
+                    </tr>
+                </thead>
+
+                <tbody class="text-center">
+                    <tr *ngFor="let item of dataList;let i=index">
+                        <td> {{ i + 1 }} </td>
+                        <td> {{ item.code }} </td>
+                        <td> {{ getNameStatementType(item.tran_type) }} </td>
+                        <td> {{ item.cust_no }} </td>
+                        <td> {{ item.cust_name }} </td>
+                        <td> {{ moneyToTextService.formatCurrency(item.amount) }} </td>
+                        <td> {{ item.ccy }} </td>
+                        <td> {{ item.maker_at | date:'dd/MM/yyyy HH:mm:ss' }} </td>
+                        <td> {{ item.maker_id }} </td>
+                        <td>
+                            <span [ngClass]="utilService.renderStatusClass(statusList, item.status).custom_data"> {{ utilService.renderStatusClass(statusList, item.status).name }} </span>
+                        </td>
+                        <td class="text-left">
+                            <button (click)="openForm('DETAIL', item)" type="button" class="btn btn-sm btn-inverse-primary me-1" data-toggle="tooltip" title="Xem chi tiết">
+                                <i class="fa fa-desktop"></i>
+                            </button>
+
+                            <button (click)="openForm('UPDATE', item)" type="button" class="btn btn-sm btn-inverse-info me-1" data-toggle="tooltip" title="Cập nhật" *ngIf="checkShowEdit(item)">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tbody *ngIf="dataList.length == 0">
+                    <tr class="text-center">
+                       <td colspan="15">Không có dữ liệu</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card-footer bg-white p-0">
+        <div class="footable-paging">
+            <mat-paginator [length]="pageEvent.length" [pageIndex]="pageEvent.pageIndex" [pageSize]="pageEvent.pageSize" [pageSizeOptions]="[5, 10, 25, 100]" (page)="setPaginatorData($event)"></mat-paginator>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+<div class="card">
+  <div class="card-body">
+    <div mat-dialog-title class="d-flex justify-content-between">
+      <h4 class="card-title">CẬP NHẬT HẠN MỨC GDV</h4>
+      <img src="assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog('close')">
+    </div>
+
+    <form class="" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div mat-dialog-content>
+        <div class="form-group">
+          <label for="name">Loại tiền</label>
+          <ng-select  bindLabel="name" bindValue="code"
+          formControlName="ccys" [clearable]=false [selectOnTab]="true"
+          placeholder="Tên loại tiền" class="form-control form-control-sm">
+        </ng-select>
+       
+        </div>
+
+        <div class="form-group">
+          <label for="code">Hạn mức BNP</label>
+          <input id="code" class="form-control form-control-sm" formControlName="code" placeholder="Nhập hạn mức BNP" [ngClass]="{ 'is-invalid': submitted && f.code.errors }" />
+          <div *ngIf="submitted && f.code.errors" class="invalid-feedback">
+            <small *ngIf="f.code.errors?.required">Vui lòng nhập hạn mức bao niêm phong</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="exampleSelectCurentcy" class="magin-lable magin-lable">Hoạt động</label>
+          <div class="media-body icon-state switch-outline switch-sm">
+            <label class="switch">
+              <input type="checkbox" formControlName="status">
+              <span class="switch-state bg-primary"></span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <div mat-dialog-footer class="pull-right mt-3">
+        <button [disabled]="isLoading" class="btn btn-primary" type="submit">
+          <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i>Lưu
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+

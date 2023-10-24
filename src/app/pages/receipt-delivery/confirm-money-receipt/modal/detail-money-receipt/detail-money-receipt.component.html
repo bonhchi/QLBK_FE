@@ -1,0 +1,222 @@
+<div mat-dialog-title class="d-flex justify-content-between mb-2">
+    <h4 class="title-size">XEM CHI TIẾT BIÊN BẢN GIAO NHẬN</h4>
+    <img src="assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog('close')">
+</div>
+
+<form [formGroup]="form" mat-dialog-content>
+    <div class="card">
+        <div class="card-body row">
+            <div class="col-4">
+                <h4 class="card-title text-uppercase mb-2">THÔNG TIN BIÊN BẢN GIAO NHẬN</h4>
+                <div class="form-group">
+                    <label>Loại giao dịch</label>
+                    <ng-select [items]="transTypeList" bindLabel="name" bindValue="code" formControlName="receipt_type"
+                        [clearable]=false [selectOnTab]="true" class="form-control form-control-sm">
+                    </ng-select>
+                </div>
+                <div class="form-group">
+                    <label>Số lệnh điều chuyển</label>
+                    <input type="text" placeholder="Nhập số lệnh điều chuyển" formControlName="receipt_no"
+                        class="form-control form-control-sm" placeHolderCharacter="*" />
+                </div>
+                <div class="form-group">
+                    <label class="label">Ngày giao dịch</label>
+                    <input formControlName="receipt_date" type="text" class="form-control form-control-sm" bsDatepicker
+                        placeholder="DD/MM/YYYY" [minDate]="minDate" />
+                </div>
+                <div class="form-group">
+                    <label>Loại tiền</label>
+                    <ng-select [items]="[]" bindLabel="name" bindValue="code" formControlName="receipt_type"
+                        [clearable]=false [selectOnTab]="true" class="form-control form-control-sm">
+                    </ng-select>
+                </div>
+            </div>
+            <div class="col-4 border-left">
+                <h4 class="card-title text-uppercase mb-2">THÔNG TIN ĐƠN VỊ GIAO</h4>
+                <div class="form-group">
+                    <label>Đơn vị</label>
+                    <input type="text" formControlName="receipt_delivery_branch" class="form-control form-control-sm" />
+                </div>
+                <div class="form-group">
+                    <label>Người giao</label>
+                    <input type="text" formControlName="receipt_delivery_user" class="form-control form-control-sm" />
+                </div>
+                <div class="form-group">
+                    <label>Chức vụ</label>
+                    <input type="text" formControlName="receipt_delivery_role" class="form-control form-control-sm" />
+                </div>
+            </div>
+            <div class="col-4 border-left">
+                <h4 class="card-title text-uppercase mb-2">THÔNG TIN ĐƠN VỊ NHẬN</h4>
+                <div class="form-group">
+                    <label>Đơn vị</label>
+                    <input type="text" formControlName="receipt_receive_branch" class="form-control form-control-sm" />
+                </div>
+                <div class="form-group">
+                    <label>Người nhận</label>
+                    <input type="text" formControlName="receipt_receive_user" class="form-control form-control-sm" />
+                </div>
+                <div class="form-group">
+                    <label>Chức vụ</label>
+                    <input type="text" formControlName="receipt_receive_role" class="form-control form-control-sm" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-body form-group pt-0">
+            <!-- <h4 class="card-title text-uppercase mb-0">HẠCH TOÁN THU/CHI THEO TỪNG LOẠI TIỀN</h4> -->
+            <mat-tab-group>
+                <ng-container *ngFor="let ccy of ccys; index as i">
+                    <mat-tab label={{ccy}}>
+                        <div class="form-group row my-3">
+                            <h4 class="card-title text-uppercase mb-2 mt-1">THÔNG TIN SỔ HẠCH TOÁN THU/CHI</h4>
+                            <div class="col-4">
+                                <label class="label">Tổng tiền</label>
+                                <input type="text" value="100000" readonly class="form-control form-control-sm" disabled/>
+                            </div>
+                            <div class="col-4">
+                                <label class="label">Số giao dịch hạch toán chi</label>
+                                <input type="text" value="" readonly class="form-control form-control-sm" disabled/>
+                            </div>
+                            <div class="col-4">
+                                <label class="label">Số giao dịch hạch toán thu</label>
+                                <input type="text" value="" readonly class="form-control form-control-sm" disabled/>
+                            </div>
+                        </div>
+
+                        <h4 class="card-title text-uppercase mb-2 mt-4">THÔNG TIN BẢNG KÊ</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2"> STT </th>
+                                        <th rowspan="2"> Mệnh giá </th>
+                                        <th colspan="2"> Tồn quỹ </th>
+                                        <th colspan="2"> Chi tiết bảng kê </th>
+                                        <th rowspan="2"> Thành tiền </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Số tồn lành</th>
+                                        <th>Số tồn rách</th>
+                                        <th>Số lượng thu</th>
+                                        <th>Số lượng chi</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr class="text-center">
+                                        <td colspan="7"> Không tìm thấy dữ liệu </td>
+                                    </tr>
+                                </tbody>
+
+                                <!-- <tbody>
+                    <tr *ngFor="let item of listTypeCcy; let i = index;"
+                        class="text-center">
+                        <td> {{ i + 1 }} </td>
+                        <td>
+                            <span>{{moneyToText.formatCurrency(item.price)}}</span>
+                        </td>
+                        <td>
+                            <span>{{item.available_number_heal}}</span>
+                        </td>
+  
+                        <td>
+                            <span>{{item.available_number_torn}}</span>
+                        </td>
+  
+                        <td>
+                            <input type="text" class="form-control form-control-sm"
+                                mask="separator.0" thousandSeparator="."
+                                [(ngModel)]="item.number_credit"
+                                (change)="calTotalAmount(item)" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control form-control-sm"
+                                mask="separator.0" thousandSeparator="."
+                                [(ngModel)]="item.number_debit"
+                                (change)="calTotalAmount(item)" />
+                        </td>
+                        <td class="text-center">
+                            <span>{{moneyToText.formatCurrency(item.total)}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="text-center text-danger">
+                            <b> Cộng Thành Tiền</b>
+                        </td>
+                        <td class="text-center text-danger">
+                            <span><b>{{moneyToText.formatCurrency(totalAmount)}}</b></span>
+                        </td>
+                    </tr>
+                </tbody> -->
+                            </table>
+                        </div>
+
+                        <h4 class="card-title text-uppercase mb-2 mt-4">THÔNG TIN BAO NIÊM PHONG</h4>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-sm table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <div class="d-flex d-flex justify-content-center">
+                                                <input class="form-check-input me-2" type="checkbox">
+                                                <label class="mt-1" for="type_hold">Chọn tất cả </label>
+                                            </div>
+                                        </th>
+                                        <th> Mã BNP</th>
+                                        <th> Tên BNP</th>
+                                        <th> Giá trị</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody class="text-center">
+                                    <tr>
+                                        <td colspan="4" class="text-center"> Không tìm thấy dữ liệu
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <!-- <tbody class="text-center">
+                          <tr>
+                              <td class="text-center">
+                                  <input type="checkbox"/>
+                              </td>
+                              <td>
+                                  {{b.seal_bag_code}}
+                              </td>
+                              <td>
+                                  {{b.seal_bag_name}}
+                              </td>
+                              <td class="text-right">
+                                  {{moneyToText.formatCurrency(b.seal_bag_balance)}}
+                              </td>
+                          </tr>
+                          <tr *ngIf="v.seal_bag?.length == 0">
+                              <td colspan="4" class="text-center"> Không có dữ liệu bao
+                                  niêm phong</td>
+                          </tr>
+                      </tbody> -->
+                            </table>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="pull-right text-danger">
+                                <span> <b>Tổng cộng:</b> <b> 100.000</b> </span>
+                            </div>
+                        </div>
+                    </mat-tab>
+                </ng-container>
+            </mat-tab-group>
+        </div>
+    </div>
+</form>
+
+<div mat-dialog-action class="pull-right">
+    <!-- <button type="button" class="btn btn-primary mt-3 me-1" (click)="onSave()" data-dismiss="modal">
+        Lưu
+    </button> -->
+    <button type="button" class="btn btn-danger mt-3" (click)="closeFormDialog('close')" data-dismiss="modal">
+        Thoát
+    </button>
+</div>

@@ -1,0 +1,107 @@
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title text-uppercase">Thông tin tìm kiếm</h4>
+
+                <form class="" [formGroup]="form" (ngSubmit)="onSubmit()">
+                    <div class="form-group row g-3">
+                        <div class="col-6">
+                            <label>Đơn vị cấp cha</label>
+                            <ng-select [items]="parentBranchList" bindLabel="display_name" bindValue="code"
+                                formControlName="report_parent_branch" [clearable]=false [selectOnTab]="true"
+                                class="form-control form-control-sm" (change)="onChangeParent($event)">
+                            </ng-select>
+                        </div>
+
+                        <div class="col-6">
+                            <label>Đơn vị</label>
+                            <ng-select [items]="branchList" bindLabel="display_name" bindValue="code"
+                                formControlName="report_branch" [clearable]=false [selectOnTab]="true"
+                                class="form-control form-control-sm" placeholder="--- Không tìm thấy đơn vị ---">
+                            </ng-select>
+                        </div>
+
+                        <div class="col-6">
+                            <label>User</label>
+                            <ng-select [items]="userList" bindLabel="user_name" bindValue="user_name"
+                                formControlName="report_user" [clearable]=false [selectOnTab]="true"
+                                class="form-control form-control-sm" placeholder="--- Tất cả ---">
+                            </ng-select>
+                        </div>
+                        
+                        <div class="col-6">
+                            <label class="label">Ngày giao dịch</label>
+                            <input formControlName="report_date" type="text" class="form-control form-control-sm"
+                                bsDatepicker placeholder="DD/MM/YYYY" />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary float-end me-1" [disabled]="isLoading">
+                        <i class="fs-12-px fa"
+                            [ngClass]="{'fa-spin fa-spinner': isLoading, 'fa-search me-1': !isLoading}"></i>
+                        <span class="ms-1">Tìm kiếm</span>
+                    </button>
+
+                    <button type="button" (click)="onClearForm()" class="btn btn-light float-end me-1">Reset</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="card-title">DANH SÁCH THÔNG TIN</h4>
+            <button type="button" class="btn btn-success" (click)="openModal('Add', reportType, '')">
+                <i class="fa fa-plus me-1"></i>
+                Thêm mới
+            </button>
+        </div>
+        <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+            <p>Đang tải dữ liệu</p>
+        </ngx-spinner>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Đơn vị</th>
+                        <th>User</th>
+                        <th>Thời gian tạo</th>
+                        <th>Loại báo cáo</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+
+                <tbody class="table-group-divider">
+                    <tr class="text-center" *ngFor="let item of reportList; let i = index">
+                        <td class="text-center">{{i + 1}}</td>
+                        <td>{{getBranchValue(item.branch_id)}}</td>
+                        <td>{{item.maker_id}}</td>
+                        <td>{{item.maker_at | date: 'dd/MM/yyyy'}}</td>
+                        <td>{{getTypeValue(item.report_id)}}</td>
+                        <td>
+                            <button type="button" class="btn btn-inverse-primary btn-xs me-1" data-bs-toggle="tooltip"
+                                data-bs-placement="top" title="Xem chi tiết" (click)="openModal('View', '', item)"><i
+                                    class="fa fa-desktop"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr class="text-center" *ngIf="reportList.length == 0">
+                        <td colspan="6">Không có dữ liệu</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card-footer bg-white p-0">
+        <div class="footable-paging">
+            <mat-paginator [length]="pageEvent.length" [pageIndex]="pageEvent.pageIndex" [pageSize]="pageEvent.pageSize"
+                [pageSizeOptions]="[5, 10, 25, 100]" (page)="setPaginatorData($event)"></mat-paginator>
+        </div>
+    </div>
+</div>

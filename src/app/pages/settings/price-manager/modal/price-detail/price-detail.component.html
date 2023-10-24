@@ -1,0 +1,36 @@
+<div class="card">
+  <div class="card-body">
+    <div mat-dialog-title class="d-flex justify-content-between">
+      <h4 class="card-title">CHI TIẾT MỆNH GIÁ</h4>
+      <img src="assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog('close')">
+    </div>
+    <form class="" [formGroup]="form" (ngSubmit)="onSubmitEdit()">
+      <div mat-dialog-content>
+        <div class="form-group">
+          <label for="ccy">Mã loại tiền</label>
+          <input id="ccy" class="form-control" formControlName="ccy" placeholder="Mã loại tiền"
+            [ngClass]="{ 'is-invalid': submitted && f.ccy.errors }" />
+          <div *ngIf="submitted && f.ccy.errors" class="invalid-feedback">
+            <small *ngIf="f.ccy.errors?.required">Vui lòng nhập mã loại tiền</small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="denominations">Mệnh giá</label>
+          <input id="denominations" class="form-control" formControlName="denominations" placeholder="Nhập mệnh giá"
+            [ngClass]="{ 'is-invalid': submitted && f.denominations.errors }" />
+          <div *ngIf="submitted && f.denominations.errors" class="invalid-feedback">
+            <small *ngIf="f.denominations.errors?.required">Vui lòng nhập mệnh giá</small>
+          </div>
+        </div>
+      </div>
+      <div mat-dialog-footer class="pull-right">
+        <button [disabled]="isLoading" class="btn btn-danger me-2" type="button" (click)="onSubmitDelete()">
+          <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i>Xóa
+        </button>
+        <button [disabled]="isLoading" class="btn btn-primary" type="submit">
+          <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i>Lưu
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

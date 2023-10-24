@@ -1,0 +1,144 @@
+<div mat-dialog-title class="d-flex justify-content-between mb-3">
+  <h4 class="title-size">NIÊM PHONG <span class="text-danger">{{ data.item.code }}</span></h4>
+  <img src="./assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog('close')">
+</div>
+<div mat-dialog-content>
+  <form class="" [formGroup]="form">  
+    <div class="card">
+      <div class="card-body row">
+        <h4 class="card-title text-uppercase">THÔNG TIN CHUNG</h4>
+
+        <div class="form-group col-8">
+          <label>Tên bao niêm phong</label>
+          <input type="text" placeholder="Tên bao niêm phong" formControlName="sealBagName" class="form-control form-control-sm" placeHolderCharacter="*" />
+        </div>
+
+        <div class="form-group col-4">
+          <label>Loại tiền</label>
+          <ng-select [items]="ccyList" bindLabel="name" bindValue="code" formControlName="ccy" [clearable]=false
+            [selectOnTab]="true" placeholder="--- Chọn loại tiền ---" class="form-control">
+          </ng-select>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="card mt-4">
+    <div class="card-body">
+      <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+        <p>Đang tải dữ liệu</p>
+      </ngx-spinner>
+
+      <!-- Bao niêm phong user -->
+      <ng-container *ngIf="sealBagDetail.branch_flag == 0">
+        <h4 class="card-title text-uppercase">CHI TIẾT BẢNG KÊ TIỀN</h4>
+
+        <div class="table-responsive" style="position: relative;">
+          <table class="table table-striped table-hover table-bordered">
+            <thead>
+              <tr>
+                <th rowspan="2"> STT </th>
+                <th rowspan="2"> Mệnh giá </th>
+                <th colspan="2"> Tồn quỹ </th>
+                <th colspan="1"> Chi tiết bảng kê </th>
+                <th rowspan="2"> Thành tiền </th>
+              </tr>
+              <tr>
+                  <th> Số tờ (lành) </th>
+                  <th> Số tờ (rách) </th>
+  
+                  <th *ngIf="sealBagTypeCode.BNP_LANH === sealBagDetail.tran_type"> Số tờ (lành) </th>
+                  <th *ngIf="sealBagTypeCode.BNP_RACH === sealBagDetail.tran_type"> Số tờ (rách) </th>
+              </tr>
+            </thead>
+        
+            <tbody class="text-center">
+              <tr *ngFor="let item of availableFundsList, index as i">
+                <td> {{i + 1}} </td>
+                <td> {{moneyToTextService.formatCurrency(item.price)}} </td>
+  
+                <td> {{moneyToTextService.formatCurrency(item.available_number_heal)}} </td>
+                <td> {{moneyToTextService.formatCurrency(item.available_number_torn)}} </td>
+  
+                <td *ngIf="sealBagTypeCode.BNP_LANH === sealBagDetail.tran_type">
+                  <input type="text" class="form-control form-control-sm" mask="separator.0" thousandSeparator="." [(ngModel)]="item.number_heal" (change)="calTotalAmount(item)" (focusout)="item.number_heal = item.number_heal || 0"/>
+                </td>
+                <td *ngIf="sealBagTypeCode.BNP_RACH === sealBagDetail.tran_type">
+                  <input type="text" class="form-control form-control-sm" mask="separator.0" thousandSeparator="." [(ngModel)]="item.number_torn" (change)="calTotalAmount(item)" (focusout)="item.number_torn = item.number_torn || 0"/>
+                </td>
+  
+                <td class="text-end">
+                  <span *ngIf="sealBagTypeCode.BNP_LANH === sealBagDetail.tran_type">{{ moneyToTextService.formatCurrency(item.total) }}</span>
+                  <span *ngIf="sealBagTypeCode.BNP_RACH === sealBagDetail.tran_type">{{ moneyToTextService.formatCurrency(item.total) }}</span>
+                </td>              
+              </tr>
+  
+              <tr>
+                <td colspan="5" class="bg-white text-danger fw-bolder">Tổng cộng</td>
+                <td class="text-end text-danger fw-bolder">{{ moneyToTextService.formatCurrency(totalAmount) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+
+      <!-- Bao niêm phong đơn vị -->
+      <ng-container *ngIf="sealBagDetail.branch_flag == 1">
+        <h4 class="card-title text-uppercase">DANH SÁCH BAO NIÊM PHONG ĐƠN VỊ</h4>
+
+        <div class="table-responsive" style="position: relative;">
+          <table class="table table-striped table-hover table-bordered">
+            <thead>
+              <tr>
+                <th> <input *ngIf="sealBagBranchList.length > 0" class="form-check-input custom-form-check-input" type="checkbox" aria-label="..." [checked]="isCheckedAll" (change)="onCheckAll($event)"> </th>
+                <th> STT </th>
+                <th> Mã BNP </th>
+                <th> Tên BNP </th>
+                <th> Giá trị </th>
+                <th> Trạng thái </th>
+              </tr>
+            </thead>
+        
+            <tbody class="text-center">
+              <tr *ngFor="let item of sealBagBranchList, index as i">
+                <td>
+                  <input [checked]="item.is_checked" class="form-check-input custom-form-check-input" type="checkbox" (change)="onCheck(item)">
+                </td>
+                <td> {{i + 1}} </td>
+                <td> {{ item.code }} </td>
+                <td> {{ item.name }} </td>
+                <td> {{ moneyToTextService.formatCurrency(item.balance) }} </td>
+                <td>
+                  <span class="badge rounded-pill denomination_txt" [ngClass]="{'badge-warning': item.status === sealBagStatusCode.CHO_NIEM_PHONG}" *ngIf="item.status===sealBagStatusCode.CHO_NIEM_PHONG">
+                    Chờ niêm phong
+                  </span>
+                  <span class="badge rounded-pill denomination_txt" [ngClass]="{'badge-success': item.status === sealBagStatusCode.DA_NIEM_PHONG}" *ngIf="item.status===sealBagStatusCode.DA_NIEM_PHONG">
+                    Đã niêm phong
+                  </span>
+                </td>
+              </tr>
+
+              <tr>
+                <td colspan="5" class="text-danger fw-bolder text-uppercase">Tổng cộng</td>
+                <td class="text-end text-danger fw-bolder">{{ moneyToTextService.formatCurrency(totalAmountSealBagBranch) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+      
+    </div>    
+  </div>
+
+</div>
+
+<div mat-dialog-action class="pull-right mt-3">
+  <button type="button" class="btn btn-primary me-2" [disabled]="isLoading || (totalAmount == 0 && totalAmountSealBagBranch == 0)" (click)="onSubmit()">
+    <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i>
+    Niêm phong
+  </button>
+
+  <button type="button" class="btn btn-secondary" (click)="closeFormDialog('close')" data-dismiss="modal">
+    Thoát
+  </button>
+</div>

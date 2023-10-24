@@ -1,0 +1,13 @@
+<div class="page-header" *ngIf="breadCrumbs.length > 0">
+    <h3 class="page-title">{{breadCrumbs[breadCrumbs.length-1].name}}</h3>
+    <nav aria-label="breadcrumb" role="navigation">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="javascript:void(0)">{{breadCrumbs[0].name}}</a>
+            </li>
+            <ng-container *ngFor="let item of breadCrumbs">
+                <li class="breadcrumb-item active" *ngIf="item.level > 0">{{item.name}}</li>
+            </ng-container>
+        </ol>
+    </nav>
+</div>

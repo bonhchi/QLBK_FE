@@ -1,0 +1,65 @@
+<div mat-dialog-title class="d-flex justify-content-between mb-3">
+  <h4 class="title-size">CẬP NHẬT HẠN MỨC  ĐƯỢC TỒN QUỸ</h4>
+  <img src="assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog('close')">
+</div>
+
+<div class="card">
+  <div class="card-body ">
+    <form class="" [formGroup]="form">
+      <div class="col-12">
+        <label>Loại tiền</label>
+        <ng-select [items]="ccys"  bindLabel="name" bindValue="code"
+          formControlName="ccy" [clearable]=false [selectOnTab]="true"
+          placeholder="--- Chọn loại tiền ---" class="form-control">
+        </ng-select>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-body">
+    <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+      <p>Đang tải dữ liệu</p>
+    </ngx-spinner>
+    <label class="label">Thông tin hạn mức</label>
+    <div class="table-responsive mt-1" style="max-height: 450px">
+      <table class="table table-striped table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>MỆNH GIÁ</th>
+            <th>SỐ TỜ</th>
+            <th>THÀNH TIỀN</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          <tr>
+            <td class="text-center">VND </td>
+            <td>
+              <input min="0" type="number" class="form-control form-control-sm m-auto"
+                oninput="this.value = Math.abs(this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1'))">
+            </td>
+            <td class="text-center">
+              100.000
+            </td>
+          </tr>
+          <tr class="">
+            <td colspan="2" class="text-center"><b> Cộng thành tiền</b></td>
+            <td> 1000</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+<div mat-dialog-footer class="pull-right">
+  <button [disabled]="isLoading" class="btn btn-success me-2 mt-3" type="button">
+    <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i> Lưu
+  </button>
+  <button type="button" class="btn btn-secondary mt-3" (click)="closeFormDialog('close')" data-dismiss="modal">
+    Thoát
+  </button>
+</div>
+

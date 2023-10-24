@@ -1,0 +1,64 @@
+<div class="card">
+    <div class="card-body">
+      <form class="row" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-group mb-0 col-3">
+          <label>Đơn vị</label>
+          <input type="text" class="form-control form-control-sm" formControlName="branch_id" />
+        </div>
+
+        <div class="form-group mb-0 col-3">
+          <label>Ngày tạo</label>
+          <input type="text" class="form-control form-control-sm" formControlName="created_date" />
+        </div>
+
+        <div class="form-group mb-0 col-3">
+          <label>Vai trò FCC</label>
+          <ng-select formControlName="role_func_id" [items]="TYPE_ROLE_RESERVE_FUND" (change)="changeRole()" bindLabel="name" bindValue="id" [clearable]=false [selectOnTab]="true"  class="form-control form-control-sm">
+          </ng-select>
+        </div>
+        <div class="form-group mb-0 col-3">
+          <label for="listStatus">Loại tiền</label>
+          <ng-select [items]="ccys" formControlName="ccy" bindLabel="name" bindValue="id"
+            [selectOnTab]="true" [clearable]=false [multiple]="true" placeholder="--- Chọn loại tiền ---"
+            class="form-control form-control-sm" (change)="changeCcy()">
+          </ng-select>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="card mt-4">
+    <div class="card-body">
+      <h4 class="card-title text-uppercase">Danh sách giao dịch viên</h4>
+
+      <table class="table table-striped table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>User name</th>
+            <th>Till user</th>
+            <th>Loại tiền</th>
+            <th>BNP lành</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider text-center" *ngIf="users.length > 0">
+          <tr *ngFor="let data of users; index as i">
+            <td scope="row"> {{ i + 1 }} </td>
+            <td>
+              <span class="font-weight-bold text-uppercase">{{data.user_name}}</span> 
+            </td>
+            <td>{{data.till_status}}</td>
+            <td>{{data.ccy}}</td>
+            <td>Có</td>
+          </tr>
+        </tbody>
+        
+        <tbody class="table-group-divider" *ngIf="users.length == 0">
+          <tr class="text-center">
+            <td colspan="6">Không có dữ liệu</td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>

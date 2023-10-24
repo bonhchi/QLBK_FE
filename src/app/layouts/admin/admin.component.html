@@ -1,0 +1,18 @@
+<div class="container-scroller w-100">
+    <app-sidebar></app-sidebar>
+    <div class="page-body-wrapper full-page-wrapper">
+        <div class="container-fluid p-0">
+            <app-header></app-header>
+            <div class="main-panel min-vh-100">
+                <div class="content-wrapper pb-0">
+                    <app-breadcrumb></app-breadcrumb>
+                    <router-outlet></router-outlet>
+                </div>
+                <app-footer></app-footer>
+            </div>
+        </div>
+    </div>
+</div>
+
+<confirm-modal></confirm-modal>
+<notification></notification>

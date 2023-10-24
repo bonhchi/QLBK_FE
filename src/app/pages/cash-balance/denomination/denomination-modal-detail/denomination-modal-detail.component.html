@@ -1,0 +1,118 @@
+<div mat-dialog-title class="d-flex justify-content-between mb-3">
+  <!-- <h4 class="title-size">XEM CHI TIẾT ĐỔI MỆNH GIÁ</h4> -->
+  <div class="d-flex align-items-center">
+    <h4 class="title-size mb-0 me-3">
+      CHI TIẾT ĐỔI MỆNH GIÁ
+      <span class="text-danger">{{ data.item.code }}</span>
+    </h4>
+    <!-- <div [ngClass]="
+        utilService.renderStatusClass(data.statusList, data.item.status)
+          .custom_data
+      " class="px-5 py-2 ms-3">
+      {{
+      utilService.renderStatusClass(data.statusList, data.item.status).name
+      }}
+    </div> -->
+  </div>
+  <img src="assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog('close')">
+</div>
+
+<div mat-dialog-content>
+  <div class="card">
+    <div class="card-body row">
+      <form [formGroup]="form">
+        <div class="form-group row g-3">
+          <div class="col-4">
+            <label class="label">Ngày giao dịch</label>
+            <input formControlName="transactionDate" type="text" class="form-control form-control-sm" bsDatepicker
+              placeholder="DD/MM/YYYY" />
+          </div>
+
+          <div class="col-4">
+            <label>Loại tiền</label>
+            <input formControlName="transactionCcy" type="text" class="form-control form-control-sm" />
+          </div>
+
+          <div class="col-4">
+            <label>Loại giao dịch</label>
+            <ng-select [items]="transactionType" bindLabel="name" bindValue="code" formControlName="transactionType"
+              [clearable]=false [selectOnTab]="true" class="form-control form-control-sm">
+            </ng-select>
+          </div>
+
+          <div class="col-12">
+            <label>Nội dung</label>
+            <textarea id="denomination_content" rows="5" type="text" class="form-control form-control-sm"
+              formControlName="transactionContent"></textarea>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-body">
+      <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+        <p>Đang tải dữ liệu</p>
+      </ngx-spinner>
+      <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered">
+          <thead>
+            <tr>
+              <th rowspan="2"> STT </th>
+              <th rowspan="2"> Mệnh giá </th>
+              <th colspan="2"> Chi tiết bảng kê </th>
+              <th rowspan="2"> Thành tiền </th>
+            </tr>
+            <tr>
+              <th>Số lượng thu</th>
+              <th>Số lượng chi</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let item of typeCcyList; let i = index;" class="text-center">
+              <td> {{ i + 1 }} </td>
+              <td>
+                <!-- {{item.price}} -->
+                <span>{{moneyToTextService.formatCurrency(item.price)}}</span>
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" mask="separator.0" thousandSeparator="."
+                  [(ngModel)]="item.number_credit" disabled />
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" mask="separator.0" thousandSeparator="."
+                  [(ngModel)]="item.number_debit" disabled />
+              </td>
+              <td class="text-center">
+                <span>{{moneyToTextService.formatCurrency(item.total)}}</span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4" class="text-center text-danger">
+                <b> Cộng Thành Tiền</b>
+              </td>
+              <td class="text-center text-danger">
+                <span><b>{{moneyToTextService.formatCurrency(totalAmount)}}</b></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-action class="pull-right">
+  <button type="button" class="btn btn-primary mt-3 me-1" *ngIf="data.item.status == 'CHO_XAC_NHAN'" (click)="onApprove()">
+    Xác nhận
+  </button>
+  <button type="button" class="btn btn-danger mt-3 me-1" *ngIf="data.item.status != 'DA_HUY' && isCurrentDate" (click)="onCancel()"
+    data-dismiss="modal">
+    Hủy giao dịch
+  </button>
+  <button type="button" class="btn btn-secondary mt-3" (click)="closeFormDialog('close')">
+    Thoát
+  </button>
+</div>

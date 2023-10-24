@@ -1,0 +1,86 @@
+<div class="card">
+  <div class="card-body">
+    <form class="form-group" [formGroup]="form" (ngSubmit)="onSearch()">
+      <h4 class="card-title">THÔNG TIN TÌM KIẾM</h4>
+      <div class="d-flex justify-content-start align-items-end">
+        <div class="col-2">
+          <label class="label">Tên kho quỹ gốc</label>
+          <input type="text" class="form-control form-control-sm" formControlName="head" />
+          <!-- <ng-select bindLabel="branch_name" bindValue="branch_code" [items]="heads" [searchable]="true"
+            formControlName="head" [clearable]="false" class="form-control" readonly="true">
+          </ng-select> -->
+        </div>
+
+        <div class="col-4 ms-3">
+          <label class="label">Tên cụm kho quỹ tập trung</label>
+          <input type="text" class="form-control form-control-sm" formControlName="branch_name" />
+        </div>
+
+        <div class="ms-4">
+          <button type="submit" [disabled]="isLoading" class="btn btn-primary me-2">Tìm kiếm</button>
+          <button type="button" (click)="resetFilter()" class="btn btn-light me-2">Reset</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between mb-3 form-group">
+      <h4 class="card-title">DANH SÁCH CỤM KHO QUỸ TẬP TRUNG ({{branchList.length}})</h4>
+      <button type="button" class="btn btn-success"  (click)="openFormMoney('create', '')"><i class="fa fa-plus me-1"></i>  Thêm mới</button>
+    </div>
+
+    <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+        <p>Đang tải dữ liệu</p>
+    </ngx-spinner>
+
+    <div class="table-responsive min-height-500">
+      <table class="table table-striped table-hover table-bordered">
+        <thead>
+          <tr class="">
+            <th scope="col">#</th>
+            <th scope="col">Mã kho quỹ</th>
+            <th scope="col">Tên kho quỹ</th>
+            <th scope="col">Được tồn quỹ</th>
+            <th scope="col">Trạng thái</th>
+            <th scope="col">Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody class="table-group-divider">
+          <ng-container *ngFor="let khoquy of branchList, index as i">
+            <tr class="text-center">
+              <th scope="row">{{i+1}}</th>
+              <td>{{khoquy.code }}</td>
+              <td>{{khoquy.name}}</td>
+              <td>
+                <i *ngIf="khoquy.is_warehouse" class="fa fa-check" style="color: #1724a9;" aria-hidden="true"></i>
+                <i *ngIf="!khoquy.is_warehouse" class="fa fa-times" style="color: #ea0029;" aria-hidden="true"></i>
+              </td>
+              <td> 
+                <label class="label p-1 px-2 ms-2 text-white cursor-pointer" [ngClass]="findStatus(khoquy.active_flag).color">
+                  {{findStatus(khoquy.active_flag).name}}
+                </label>
+              </td>
+              <td>
+                <button type="button" class="btn btn-outline-info" (click)="openFormMoney('detail', khoquy)">
+                  Xem
+                  <!-- ({{khoquy.children.length}}) -->
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+
+        <tbody class="table-group-divider" *ngIf="branchList.length == 0">
+          <tr class="text-center">
+            <td colspan="13">Không có dữ liệu</td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+</div>

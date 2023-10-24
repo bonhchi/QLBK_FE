@@ -1,0 +1,60 @@
+<div mat-dialog-title class="d-flex justify-content-between mb-3">
+  <div class="d-flex align-items-center ">
+    <h4 class="title-size mb-0">CHI TIẾT TỒN QUỸ THỰC TẾ</h4>
+  </div>
+  <img src="assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog('close')">
+</div>
+<div mat-dialog-content>
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between">
+        <label>Ngày giao dịch: </label>
+        <label>Loại tiền: {{detail.code}}</label>
+      </div>
+      <div class="table-responsive mt-2">
+        <table class="table table-striped table-hover table-bordered">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Mệnh giá</th>
+              <th>Số lành</th>
+              <th>Số rách</th>
+              <th *ngIf="detail.code == 'VND'">Kim loại </th>
+              <th>Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider" *ngIf='detail.def_price_detail.length > 0'>
+            <tr class="text-center" *ngFor="let item of detail.def_price_detail, index as i">
+              <td>{{i +1}}</td>
+              <td>{{item.price}}</td>
+              <td>{{item.number_heal}}</td>
+              <td>{{item.number_torn}}</td>
+              <td>{{item.number_coin}}</td>
+              <td>{{moneyToTextService.formatCurrency( item.price* (item.number_heal + item.number_torn +
+                item.number_coin))}}</td>
+            </tr>
+            <tr class="text-center">
+              <td [attr.colspan]="detail.code == 'VND'? 6 : 5" class="text-danger fw-bolder"> Tồn quỹ tiền mặt thực tế(Till tool) </td>
+              <td class="text-end text-danger fw-bolder">0</td>
+            </tr>
+
+            <tr class="text-center">
+              <td [attr.colspan]="detail.code == 'VND'? 6 : 5" class="text-danger fw-bolder"> Tồn quỹ tiền mặt theo Till FCC </td>
+              <td class="text-end text-danger fw-bolder">0</td>
+            </tr>
+
+            <tr class="text-center">
+              <td [attr.colspan]="detail.code == 'VND'? 6 : 5" class="text-danger fw-bolder"> Chênh lệch </td>
+              <td class="text-end text-danger fw-bolder">0</td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="detail.def_price_detail.length  == 0">
+            <tr class="text-center">
+              <td  [attr.colspan]="detail.code == 'VND'? 6 : 5">Không có dữ liệu</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

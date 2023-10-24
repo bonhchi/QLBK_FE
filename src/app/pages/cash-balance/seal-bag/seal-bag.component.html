@@ -1,0 +1,136 @@
+<div class="row">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title text-uppercase">Thông tin tìm kiếm</h4>
+
+        <form class="" [formGroup]="form" (ngSubmit)="onSearch()">
+          <div class="form-group row g-3">
+            <div class="col-3">
+              <label>Mã BNP</label>
+              <!-- <input formControlName="account_balance_from"  class="form-control form-control-sm" /> -->
+              <input type="text" placeholder="Nhập mã BNP" formControlName="sealBagCode" class="form-control form-control-sm" placeHolderCharacter="*" />
+            </div>
+
+            <div class="col-3">
+              <label>Loại tiền</label>
+              <ng-select [items]="ccyList" bindLabel="name" bindValue="code" formControlName="ccy" [clearable]=false
+                [selectOnTab]="true" placeholder="--- Chọn loại tiền ---" class="form-control">
+              </ng-select>
+            </div>
+
+            <div class="col-3">
+              <label>Loại BNP (lành/rách)</label>
+              <ng-select [items]="sealBagTypeList" bindLabel="name" bindValue="code" formControlName="healTornCoin"
+                [clearable]=false [selectOnTab]="true" placeholder="--- Chọn loại BNP ---" class="form-control">
+              </ng-select>
+            </div>
+
+            <div class="col-3">
+              <label>Trạng thái</label>
+              <ng-select [items]="statusList" bindLabel="name" bindValue="code" formControlName="status" [clearable]=false
+                [selectOnTab]="true" placeholder="--- Chọn trạng thái ---" class="form-control">
+              </ng-select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary float-end" [disabled]="isLoading">
+            <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner': isLoading, 'fa-search me-1': !isLoading}"></i>
+            Tìm kiếm
+          </button>
+
+          <button type="button" (click)="onClearForm()" class="btn btn-light float-end me-2">
+            <i class="fa fa-refresh me-1"></i>
+            Reset
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- --------------------------------------------------- -->
+<div class="card mt-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between">
+      <h4 class="card-title">DANH SÁCH THÔNG TIN</h4>
+    </div>
+
+    <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+      <p>Đang tải dữ liệu</p>
+    </ngx-spinner>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Mã BNP đầu ngày</th>
+            <th>Tên BNP</th>
+            <th>User BNP</th>
+            <th>User nhận BNP</th>
+            <th>Giá trị BNP đầu ngày</th>
+            <th>Trạng thái</th>
+            <!-- <th>Mã BNP đã niêm</th> -->
+            <th>Giá trị BNP đã niêm</th>
+            <!-- <th>Trạng thái UHQ</th> -->
+            <th>Thao Tác</th>
+          </tr>
+        </thead>
+
+        <tbody class="table-group-divider text-center" *ngIf="sealBagList.length > 0">
+          <tr *ngFor="let item of sealBagList; index as i">
+            <td scope="row"> {{ i + 1 }} </td>
+            <td> {{ item.code }}</td>
+            <td> {{ item.name }} </td>
+            <td> {{ item.maker_id }} </td>
+            <td> {{ item.assigned_id }} </td>
+            <td> {{ componentShareService.formatCurrency(item.begin_day_balance *1) }}</td>
+            <td>
+              <span [ngClass]="utilService.renderStatusClass(statusList, item.status).custom_data"> {{ utilService.renderStatusClass(statusList, item.status).name }} </span>
+            </td>
+
+            <!-- <td>
+              <span *ngIf="item.seal_bag_status === 'COM' || item.seal_bag_status === 'OPE'">
+                {{ item.seal_bag_name_close }}
+              </span>
+            </td> -->
+
+            <td>
+              {{ componentShareService.formatCurrency(item.balance) }}
+            </td>
+
+            <td>
+              <button type="button" class="btn btn-inverse-danger btn-sm" data-toggle="tooltip" title="Niêm phong" (click)="openForm('CLOSE', item)" *ngIf="item.status === sealBagStatusCode.CHO_NIEM_PHONG">
+                <i class="mdi mdi-email"></i>
+              </button>
+
+              <button type="button" class="btn btn-inverse-danger btn-sm" data-toggle="tooltip" title="Mở niêm phong" (click)="openForm('OPEN', item)" *ngIf="item.status === sealBagStatusCode.DA_NIEM_PHONG">
+                <i class="mdi mdi-email-open"></i>
+              </button>
+
+              <!-- <button type="button" class="btn btn-sm btn-inverse-primary ms-1" data-toggle="tooltip" title="Xem chi tiết" (click)="openForm('DETAIL', item)" *ngIf="item.status == sealBagStatusCode.DA_NIEM_PHONG">
+                <i class="mdi mdi-desktop-mac"></i>
+              </button> -->
+            </td>
+          </tr>
+
+        </tbody>
+
+        <tbody class="table-group-divider" *ngIf="sealBagList.length == 0">
+          <tr class="text-center">
+            <td colspan="14">Không có dữ liệu</td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+  <div class="card-footer bg-white p-0">
+    <div class="footable-paging">
+      <mat-paginator [length]="pageEvent.length" [pageIndex]="pageEvent.pageIndex" [pageSize]="pageEvent.pageSize" [pageSizeOptions]="[5, 10, 25, 100]" (page)="setPaginatorData($event)"></mat-paginator>
+    </div>
+  </div>
+
+</div>

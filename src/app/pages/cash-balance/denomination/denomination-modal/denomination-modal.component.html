@@ -1,0 +1,119 @@
+<div mat-dialog-title class="d-flex justify-content-between mb-3">
+  <h4 class="title-size" *ngIf="data.type === 'Add'">THÊM MỚI ĐỔI MỆNH GIÁ</h4>
+  <h4 class="title-size" *ngIf="data.type === 'View'">XEM CHI TIẾT ĐỔI MỆNH GIÁ</h4>
+  <img src="assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog('close')">
+</div>
+
+<div mat-dialog-content>
+  <div class="card">
+    <div class="card-body">
+      <form [formGroup]="form">
+        <div class="row form-group g-3">
+          <div class="col-4">
+            <label class="label">Ngày giao dịch</label>
+            <input formControlName="transactionDate" type="text" class="form-control form-control-sm" bsDatepicker
+              placeholder="DD/MM/YYYY" />
+          </div>
+
+          <div class="col-4">
+            <label>Loại tiền</label>
+            <ng-select [items]="listCurrency" bindLabel="name" bindValue="code" formControlName="transactionCcy"
+              [clearable]=false [selectOnTab]="true" class="form-control form-control-sm"
+              (ngModelChange)='onOptionsSelected()'>
+            </ng-select>
+          </div>
+
+          <div class="col-4">
+            <label>Loại giao dịch</label>
+            <ng-select [items]="transactionType" bindLabel="name" bindValue="code" formControlName="transactionType"
+              [clearable]=false [selectOnTab]="true" class="form-control form-control-sm">
+            </ng-select>
+          </div>
+
+          <div class="col-12">
+            <label>Nội dung</label>
+            <textarea id="denomination_content" rows="5" type="text" class="form-control form-control-sm"
+              formControlName="transactionContent" maxlength="250"></textarea>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-body">
+      <!-- <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+        <p>Đang tải dữ liệu</p>
+      </ngx-spinner> -->
+      <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered">
+          <thead>
+            <tr>
+              <th rowspan="2"> STT </th>
+              <th rowspan="2"> Mệnh giá </th>
+              <th colspan="2"> Tồn quỹ </th>
+              <th colspan="2"> Chi tiết bảng kê </th>
+              <th rowspan="2"> Thành tiền </th>
+            </tr>
+            <tr>
+              <th>Số tồn (lành)</th>
+              <th>Số tồn (rách)</th>
+
+              <th>Số lượng thu</th>
+              <th>Số lượng chi</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let item of listTypeCcy; let i = index;" class="text-center">
+              <td> {{ i + 1 }} </td>
+              <td>
+                <span>{{moneyToText.formatCurrency(item.price)}}</span>
+              </td>
+              <td>
+                <span>{{item.available_number_heal}}</span>
+              </td>
+
+              <td>
+                <span>{{item.available_number_torn}}</span>
+              </td>
+
+              <td>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="item.number_credit"
+                  (change)="calTotalAmount(item)" mask="separator.0" thousandSeparator="."
+                  (focusout)="item.number_credit = item.number_credit || 0"/>
+              </td>
+
+              <td>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="item.number_debit"
+                  (change)="calTotalAmount(item)" mask="separator.0" thousandSeparator="."
+                  (focusout)="item.number_debit = item.number_debit || 0"/>
+              </td>
+
+              <td class="text-center">
+                <span>{{moneyToText.formatCurrency(item.total)}}</span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="6" class="text-center text-danger">
+                <b> Cộng Thành Tiền</b>
+              </td>
+              <td class="text-center text-danger">
+                <span><b>{{moneyToText.formatCurrency(totalAmount)}}</b></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-action class="pull-right">
+  <button type="button" class="btn btn-primary mt-3 me-1" (click)="onSubmit()" data-dismiss="modal">
+    Lưu
+  </button>
+  <button type="button" class="btn btn-secondary mt-3" (click)="closeFormDialog('close_create')" data-dismiss="modal">
+    Thoát
+  </button>
+</div>

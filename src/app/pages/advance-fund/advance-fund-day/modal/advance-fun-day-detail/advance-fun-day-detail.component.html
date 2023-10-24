@@ -1,0 +1,141 @@
+<div mat-dialog-title class="d-flex justify-content-between mb-3">
+  <div class="d-flex align-items-center ">
+    <h4 class="title-size mb-0">CHI TIẾT GIAO DỊCH ỨNG HOÀN QUỸ TRONG NGÀY</h4>
+    <div class="text-white px-5 py-2 ms-3" [ngClass]="renderDataAdvanceStatus(data.item.status).color">
+      {{renderDataAdvanceStatus(data.item.status).name}}
+    </div>
+  </div>
+
+  <img src="assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog('close')">
+</div>
+
+<div mat-dialog-content>
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title text-uppercase">Nội dung khách hàng</h4>
+
+      <form class="" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-group row g-3">
+          <div class="col-3">
+            <label>Loại giao dịch</label>
+            <ng-select [items]="data.transaction_types" bindLabel="name" bindValue="type"
+              formControlName="transaction_type" [clearable]=false [selectOnTab]="true"
+              class="form-control form-control-sm">
+            </ng-select>
+          </div>
+
+          <div class="col-3">
+            <label>Vai trò</label>
+            <ng-select [items]="type_role" bindLabel="name" bindValue="id" [clearable]=false [selectOnTab]="true"
+              formControlName="role" class="form-control form-control-sm">
+            </ng-select>
+          </div>
+
+          <div class="col-6">
+            <label>User ID</label>
+            <ng-select [items]="userList" bindLabel="display_role_name" bindValue="user_name"
+              formControlName="till_vault_id" [ngClass]="{ 'is-invalid': submitted && f.user.errors }" [clearable]=false
+              class="form-control form-control-sm">
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="form-group row g-3">
+          <div class="col-3">
+            <label>Loại tiền</label>
+            <input type="text" class="form-control form-control-sm" formControlName="ccy" />
+          </div>
+
+          <div class="col-3">
+            <label>Số tiền</label>
+            <input mask="separator.3" thousandSeparator="." placeholder="" type="text"
+              class="form-control form-control-sm" formControlName="amount" />
+          </div>
+
+          <div class="col-6">
+            <label>Nội dung</label>
+            <input type="text" class="form-control form-control-sm" formControlName="description" />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-body">
+      <h4 class="card-title text-uppercase">Chi tiết bảng kê</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th rowspan="2"> STT </th>
+              <th rowspan="2"> Mệnh giá </th>
+              <th [attr.colspan]="handleColspan()"> Chi tiết bảng kê </th>
+              <th rowspan="2"> Thành tiền </th>
+            </tr>
+
+            <tr>
+              <th> Số tờ (lành) </th>
+              <th *ngIf="handleCheck()"> Số tờ (rách) </th>
+              <th *ngIf="form.value.ccy == 'VND'"> Số lượng kim loại </th>
+            </tr>
+          </thead>
+
+          <tbody class="text-center" *ngIf="this.data.item.def_price_detail_data?.length > 0">
+            <tr *ngFor="let item of this.data.item.def_price_detail_data, index as i">
+              <td> {{i + 1}} </td>
+              <td> {{moneyToText.formatCurrency(item.price)}} </td>
+              <td> {{moneyToText.formatCurrency(item.number_heal)}} </td>
+              <td *ngIf="handleCheck()"> {{moneyToText.formatCurrency(item.number_torn)}}</td>
+              <td *ngIf="form.value.ccy == 'VND'"> {{moneyToText.formatCurrency(item.number_coin)}} </td>
+
+              <td class="text-end">
+                <span>{{ moneyToText.formatCurrency(item.total) }}</span>
+              </td>
+            </tr>
+
+            <tr>
+              <td [attr.colspan]="handleColspanTotal()" class="bg-white text-danger fw-bolder">
+                Cộng thành tiền</td>
+              <td class="text-end text-danger fw-bolder">
+                {{moneyToText.formatCurrency(calculatorTotal(this.data.item.def_price_detail_data))}}
+              </td>
+            </tr>
+          </tbody>
+
+          <tbody class="table-group-divider"
+            *ngIf="this.data.item.def_price_detail_data?.length == 0 || this.data.item.def_price_detail_data?.length == null">
+            <tr class="text-center">
+              <td [attr.colspan]="handleColspanTotal()">Không có dữ liệu</td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions class="pull-right">
+  <button (click)="confirmTransation()" *ngIf="checkAction('GUI_DUYET')" 
+  type="button" class="btn btn-primary me-1" [disabled]="isConfrimLoading">
+    <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isConfrimLoading,'': !isConfrimLoading}"></i>
+    Gửi duyệt
+  </button>
+
+  <button (click)="refuseTransation()" *ngIf="checkAction('DA_HUY')" type="button" class="btn btn-warning me-1">
+    Từ chối
+  </button>
+
+  <button (click)="approveTransation()" *ngIf="checkAction('PHE_DUYET')" type="button" class="btn btn-primary me-1" [disabled]="isApproveLoading">
+    <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isApproveLoading,'': !isApproveLoading}"></i>
+    Phê duyệt
+  </button>
+
+  <button (click)="printTransation()" *ngIf="data.item.status == 'CHO_DUYET' || data.item.status == 'DA_DUYET'"
+    type="button" class="btn btn-info me-1" [disabled]="isPrintLoading">
+    <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isPrintLoading,'': !isPrintLoading}"></i>
+    In PDF
+  </button>
+
+  <button type="button" class="btn btn-secondary me-2" (click)="closeFormDialog('close')">Thoát</button>
+</div>

@@ -1,0 +1,12 @@
+::ng-deep .mat-horizontal-stepper-header{
+    pointer-events: none !important;
+}
+::ng-deep .mat-step-label-selected{
+    color: red !important;
+}
+::ng-deep .money-list-step .mat-tab-labels {
+    background-color: #d8e9f7;
+}
+::ng-deep .user-list-step .mat-tab-labels {
+    background-color: #ffffff;
+}

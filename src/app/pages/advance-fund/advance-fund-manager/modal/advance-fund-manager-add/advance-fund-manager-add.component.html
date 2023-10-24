@@ -1,0 +1,42 @@
+<div mat-dialog-title class="d-flex justify-content-between mb-3">
+  <div class="d-flex align-items-center ">
+    <h4 class="title-size mb-0">PHÂN BỔ ĐẦU NGÀY</h4>
+  </div>
+  <img src="assets/icon/close.png" height="20px" class="cursor-pointer" (click)="closeFormDialog('close')">
+</div>
+<div mat-dialog-content>
+  <mat-horizontal-stepper linear id="stepper" >
+     <mat-step label="Thông tin giao dịch viên">
+      <div class="min-500">
+          <app-check-bank-teller [ccys]="ccys" (catchDataRole)="catchDataRole($event)" (catchDataMoneys)="catchDataMoneys($event)"></app-check-bank-teller>
+      </div>
+    </mat-step>
+
+    <mat-step label="Phân bổ trong bao niêm phong">
+      <div class="min-500">
+        <app-check-bnp [dataMoney]="dataMoney"  [user]="data.user" (catchDataBNP)="catchDataBNP($event)"></app-check-bnp>
+      </div>
+    </mat-step>
+
+    <mat-step label="Phân bổ tiền mặt ngoài bao niêm phong">
+      <div class="min-500">
+        <app-process-bnp [ccys]="ccys" [dataMoney]="dataMoney" [dataBNP]="dataBNP" (catchResultData)="catchResultData($event)"></app-process-bnp>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>
+
+<div mat-dialog-actions class="pull-right">
+  <button type="button" class="btn btn-light me-2" (click)="back()" *ngIf="pageIndex != 0 ">
+    <i class="fa fa-arrow-left me-1"></i>
+    Quay lại
+  </button>
+  <button  type="button" class="btn btn-success" (click)="next()" *ngIf="pageIndex < 2 ">
+    <i class="fa fa-arrow-right me-1"></i>
+    Tiếp tục
+  </button>
+  <button *ngIf="pageIndex == 2 "  [disabled]="!stateBtnSave" (click)="saveAdvanceFund()" type="button" class="btn btn-info me-1">
+    <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner': isLoading, 'me-1': !isLoading}"></i>
+    Lưu
+  </button>
+</div>
